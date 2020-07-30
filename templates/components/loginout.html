@@ -1,0 +1,28 @@
+<form>
+    {{ form.hidden_tag() }}
+    <fieldset>
+        <legend>&nbsp;JukeBox&nbsp;</legend>
+        {% if "user_id" in session %}
+            <span>{{session["user_id"]}}</span>
+            <button type="submit" formaction="/logout" formmethod="POST">Log out</button>
+        {% else %}
+            <label>Username: <input id="username" name="username" type="text" placeholder="Enter your username" required></label>
+            <label>Password: <input id="password" name="password" type="password" placeholder="Enter your password" required></label>
+            <button type="submit" formaction="/login" formmethod="POST">Log in</button>
+            <button type="submit" formaction="/register" formmethod="POST">Register</button>
+        {% endif %}
+    </fieldset>
+    {% with MESSAGES = get_flashed_messages() %}
+    <!--
+    {% with MESSAGES = get_flashed_messages(with_categories=true) %}
+    {% with MESSAGES = get_flashed_messages(category_filter=["error"]) %}
+    get_flashed_messages(with_categories, category_filter)
+    -->
+        {% if MESSAGES %}
+            {% for MSG in MESSAGES %}
+            {% for CAT, MSG in MESSAGES %}
+            <div>{{ MSG }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+</form>

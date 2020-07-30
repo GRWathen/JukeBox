@@ -1,8 +1,8 @@
 #createdb db
 
-from flask import Flask, render_template
+from flask import Flask
 from flask_debugtoolbar import DebugToolbarExtension
-from models import db, connect_db, User
+from models import db, connect_db, User, Video, Playlist, Playlists_Videos
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "Don't look at me."
@@ -15,21 +15,23 @@ app.config["SQLALCHEMY_ECHO"] = True
 debug = DebugToolbarExtension(app)
 
 connect_db(app)
-def seed():
-    print("SEED BEGIN")
-    db.drop_all()
-    db.create_all()
-    User.query.delete()
 
-    #user1 = User(username="grw", password="password")
-    #user2 = User(username="da", password="secret")
+print("SEED BEGIN")
+db.drop_all()
+db.create_all()
+Playlists_Videos.query.delete()
+Playlist.query.delete()
+Video.query.delete()
+User.query.delete()
 
-    #db.session.add(user1)
-    #db.session.add(user2)
+#user1 = User(username="grw", password="password")
+#user2 = User(username="da", password="secret")
 
-    db.session.commit()
-    print("SEED END")
-#seed()
+#db.session.add(user1)
+#db.session.add(user2)
+
+db.session.commit()
+print("SEED END")
 
 @app.route("/favicon.ico")
 def fav_icon():
@@ -39,4 +41,4 @@ def fav_icon():
 @app.route("/")
 def homepage():
     """Show homepage"""
-    return render_template("seed.html")
+    return return ""
