@@ -1,26 +1,29 @@
 <form>
-    {{ form.hidden_tag() }}
+    {{ form_log.hidden_tag() }}
+    <input id="from_url" name="from_url" type="hidden" value="{{ from_url }}">
     <fieldset>
         <legend>&nbsp;JukeBox&nbsp;</legend>
         {% if "user_id" in session %}
             <span>{{session["user_id"]}}</span>
             <button type="submit" formaction="/logout" formmethod="POST">Log out</button>
         {% else %}
-            <label>Username: <input id="username" name="username" type="text" placeholder="Enter your username" required></label>
-            <label>Password: <input id="password" name="password" type="password" placeholder="Enter your password" required></label>
+            <label>Username: <input id="log_username" name="log_username" type="text" placeholder="Enter your username"></label>
+            <label>Password: <input id="log_password" name="log_password" type="password" placeholder="Enter your password"></label>
             <button type="submit" formaction="/login" formmethod="POST">Log in</button>
             <button type="submit" formaction="/register" formmethod="POST">Register</button>
         {% endif %}
     </fieldset>
-    {% with MESSAGES = get_flashed_messages() %}
     <!--
-    {% with MESSAGES = get_flashed_messages(with_categories=true) %}
-    {% with MESSAGES = get_flashed_messages(category_filter=["error"]) %}
+    {# with MESSAGES = get_flashed_messages(with_categories=true) #}
+    {# with MESSAGES = get_flashed_messages(category_filter=["error"]) #}
     get_flashed_messages(with_categories, category_filter)
     -->
+    {% with MESSAGES = get_flashed_messages() %}
         {% if MESSAGES %}
+            <!--
+            {# for CAT, MSG in MESSAGES #}
+            -->
             {% for MSG in MESSAGES %}
-            {% for CAT, MSG in MESSAGES %}
             <div>{{ MSG }}</div>
             {% endfor %}
         {% endif %}

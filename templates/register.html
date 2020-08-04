@@ -1,19 +1,26 @@
-{% extends "base.html" %}
-{% block CONTENT %}
-<h1>Register</h1>
-<p>Register for our site.</p>
-<form method="POST">
-    {{ form.hidden_tag() }}
-    {% for field in form
-    if field.widget.input_type != "hidden" %}
-    <p>
-        {{ field.label }}
-        {{ field }}
-        {% for error in field.errors %}
-        {{ error }}
-        {% endfor %}
-    </p>
-    {% endfor %}
-    <button type="submit">Register</button>
-</form>
-{% endblock %}
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>JukeBox</title>
+        <link rel="stylesheet" href="static/styles.css">
+        <script src="static/scripts.js"></script>
+    </head>
+    <body>
+        <h1>Register</h1>
+        <div>Register for our site.</div>
+        <form method="POST">
+            {{ form_register.hidden_tag() }}
+            {% for field in form_register
+                    if field.widget.input_type != "hidden" %}
+            <div>
+                {{ field.label }}
+                {{ field }}
+                {% for error in field.errors %}
+                {{ error }}
+                {% endfor %}
+            </div>
+            {% endfor %}
+            <button type="submit">Register</button>
+        </form>
+    </body>
+</html>

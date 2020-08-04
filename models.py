@@ -52,7 +52,7 @@ class Video(db.Model):
     title = db.Column(db.String(50), nullable=False)
     artist = db.Column(db.String(50), nullable=False)
     video_id = db.Column(db.String, nullable=False)
-    # unique - user_id/title/artist
+    # TODO: unique - user_id/title/artist
 
 class Playlist(db.Model):
     __tablename__ = "playlists"
@@ -61,9 +61,9 @@ class Playlist(db.Model):
         return f"<Playlist:{self.name}  ID:{self.id}>"
     
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    playlist_id = db.Column(db.Integer, db.ForeignKey("users.id"))
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
     name = db.Column(db.String(50), nullable=False)
-    # unique - user_id/name
+    # TODO: unique - user_id/name
 
 class Playlists_Videos(db.Model):
     __tablename__ = "playlists_videos"
