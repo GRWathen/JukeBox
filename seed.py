@@ -18,6 +18,8 @@ connect_db(app)
 
 print("SEED BEGIN")
 db.drop_all()
+db.session.commit()
+
 db.create_all()
 Playlists_Videos.query.delete()
 Playlist.query.delete()
@@ -41,4 +43,4 @@ def fav_icon():
 @app.route("/")
 def homepage():
     """Show homepage"""
-    return return ""
+    return "<html><body>SEED</body></html>"

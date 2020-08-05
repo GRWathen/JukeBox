@@ -2,7 +2,7 @@ from flask import Flask, request, render_template, redirect, session, flash
 from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError
 from models import db, connect_db, User, Video, Playlist, Playlists_Videos
-from forms import LogInOutForm, RegisterForm #, LoginForm, LogoutForm
+from forms import LogInOutForm, RegisterForm
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "Don't look at me."
@@ -21,11 +21,12 @@ def fav_icon():
     """Favorite Icon"""
     return ""
 
-@app.route("/")
-def homepage():
+@app.route("/", methods=["GET", "POST"], defaults={"path": ""})
+@app.route("/<path>")
+def homepage(path):
     """Show homepage"""
     form_log = LogInOutForm()
-    return render_template("home.html", form_log=form_log, from_url="home.html")
+    return render_template("home.html", form_log=form_log, from_route="/")
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
@@ -42,37 +43,36 @@ def register():
             db.session.commit()
         except IntegrityError:
             form_register.username.errors.append("Invalid name/password")
-            return render_template("register.html", form_log=form_log, form_register=form_register, from_url="register.html")
+            return render_template("register.html", form_log=form_log, form_register=form_register, from_route="/register")
 
         session["user_id"] = user.id
         # on successful login, redirect to secret page
         flash("Logged In")
         return redirect("/secret")
     else:
-        return render_template("register.html", form_log=form_log, form_register=form_register, from_url="register.html")
+        return render_template("register.html", form_log=form_log, form_register=form_register, from_route="/register")
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
     """Produce login form or handle login."""
     form_log = LogInOutForm()
+    from_route = request.form.get("from_route")
+    if from_route is None or from_route == "":
+        from_route = "/"
 
-    print("---=== Log In ===---")
-    print(request.form)
-    print(request.form.get("username"))
-    print(request.form.get("password"))
-    print(request.form.get("from_url"))
-    print("====================")
-    from_url = request.form.get("from_url")
-    if request.form.get("username") is None:
-        flash("username")
-        return render_template(from_url, form_log=form_log)
-    if request.form.get("password") is None:
-        flash("password")
-        return render_template(from_url, form_log=form_log)
+    error = False
+    name = request.form.get("log_username")
+    pwd = request.form.get("log_password")
+    if name is None or name == "":
+        error = True
+        flash("Username may not be blank")
+    if pwd is None or pwd == "":
+        error = True
+        flash("Password may not be blank")
+    if error:
+        return redirect(from_route)
+    
     if form_log.validate_on_submit():
-        name = form_log.username.data
-        pwd = form_log.password.data
-
         # authenticate will return a user or False
         user = User.authenticate(name, pwd)
         if user:
@@ -80,9 +80,9 @@ def login():
             flash("Logged In")
             return redirect("/secret")
         else:
-            form_log.username.errors = ["Invalid name/password"]
+            flash("Invalid username and/or password")
 
-    return render_template(from_url, form_log=form_log)
+    return redirect(from_route)
 
 @app.route("/logout") # TODO: should be POST - empty form to submit
 def logout():
@@ -96,4 +96,4 @@ def logout():
 def secret():
     """Example page."""
     form_log = LogInOutForm()
-    return render_template("secret.html", form_log=form_log, from_url="secret.html")
+    return render_template("secret.html", form_log=form_log, from_route="/secret")
