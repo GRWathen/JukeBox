@@ -22,13 +22,13 @@ class User(db.Model):
     public_access_code = db.Column(db.String(50), nullable=False, unique=True)
 
     @classmethod
-    def register(cls, username, pwd):
+    def register(cls, username, pwd, email, pacode):
         """Register user w/hashed password & return user."""
         hashed = bcrypt.generate_password_hash(pwd) # (pwd, work_factor)
         # turn bytestring into normal (unicode utf8) string
         hashed_utf8 = hashed.decode("utf8")
         # return instance of user w/username and hashed pwd
-        return cls(username=username, password=hashed_utf8)
+        return cls(username=username, password=hashed_utf8, email=email, public_access_code=pacode)
 
     @classmethod
     def authenticate(cls, username, pwd):

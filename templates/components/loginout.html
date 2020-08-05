@@ -3,8 +3,8 @@
     <input id="from_route" name="from_route" type="hidden" value="{{ from_route }}">
     <fieldset>
         <legend>&nbsp;JukeBox&nbsp;</legend>
-        {% if "user_id" in session %}
-            <span>{{session["user_id"]}}</span>
+        {% if "username" in session %}
+            <span>{{session["username"]}}</span>
             <button type="submit" formaction="/logout" formmethod="POST">Log out</button>
         {% else %}
             <label>Username: <input id="log_username" name="log_username" type="text" placeholder="Enter your username"></label>
