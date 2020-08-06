@@ -60,8 +60,7 @@ def register():
         
         pacode = form_register.reg_pacode.data
         if pacode is None or len(pacode) == 0:
-            error = True
-            form_register.reg_pacode.errors.append("Public Access Code may not be blank")
+            pacode = None
         
         if error:
             return render_template("register.html", form_log=form_log, form_register=form_register, from_route="/register")
@@ -70,9 +69,18 @@ def register():
         db.session.add(user)
         try:
             db.session.commit()
-        except IntegrityError:
-            flash("Invalid Username and/or Password")
-            form_register.username.errors.append("Invalid name/password")
+        except IntegrityError as e:
+            if len(e.orig.args) > 0:
+                lst = e.orig.args[0].split("=")
+                if len(lst) == 2 and lst[1].startswith("(") and lst[1].endswith(") already exists.\n"):
+                    flash(lst[1])
+                else:
+                    flash("ERROR")
+            else:
+                flash("ERROR")
+            #...\nDETAIL:  Key (username)=(one) already exists.\n
+            #...\nDETAIL:  Key (email)=(a@b.c) already exists.\n
+            #...\nDETAIL:  Key (public_access_code)=(pac) already exists.\n
             return render_template("register.html", form_log=form_log, form_register=form_register, from_route="/register")
 
         session["username"] = user.username

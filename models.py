@@ -19,7 +19,7 @@ class User(db.Model):
     username = db.Column(db.String(50), nullable=False, unique=True)
     password = db.Column(db.Text, nullable=False)
     email = db.Column(db.String(50), nullable=False, unique=True)
-    public_access_code = db.Column(db.String(50), nullable=False, unique=True)
+    public_access_code = db.Column(db.String(50), unique=True)
 
     @classmethod
     def register(cls, username, pwd, email, pacode):

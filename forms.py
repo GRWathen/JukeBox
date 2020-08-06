@@ -11,4 +11,4 @@ class RegisterForm(FlaskForm):
     reg_password = PasswordField("Password", validators=[InputRequired()])
     reg_confirm = PasswordField("Confirm", validators=[InputRequired()])
     reg_email = StringField("Email", validators=[InputRequired()])
-    reg_pacode = StringField("Public Access Code", validators=[InputRequired()])
+    reg_pacode = StringField("Public Access Code")

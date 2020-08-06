@@ -21,6 +21,13 @@
             </div>
             {% endfor %}
             <button type="submit" formaction="/register" formmethod="POST">Register</button>
+            {% with MESSAGES = get_flashed_messages() %}
+                {% if MESSAGES %}
+                    {% for MSG in MESSAGES %}
+                    <div>{{ MSG }}</div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
         </form>
     </body>
 </html>
