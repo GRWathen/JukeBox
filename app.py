@@ -78,7 +78,7 @@ def register():
         session["username"] = user.username
         # on successful login, redirect to secret page
         flash("Logged In")
-        return redirect("/secret")
+        return redirect("/")
     else:
         return render_template("register.html", form_log=form_log, form_register=form_register, from_route="/register")
 
@@ -110,19 +110,31 @@ def login():
         if user:
             session["username"] = user.username  # keep logged in
             flash("Logged In")
-            return redirect("/secret")
+            return redirect("/")
         else:
             flash("Invalid Username and/or Password")
 
     return redirect(from_route)
 
-@app.route("/logout", methods=["POST"]) # TODO: should be POST - empty form to submit
+@app.route("/logout", methods=["POST"])
 def logout():
     """Logs user out and redirects to homepage."""
     if session.get("username"):
         session.pop("username")
         flash("Logged Out")
     return redirect("/")
+
+# ==========
+
+@app.route("/private")
+def private():
+    """Private page."""
+    if not session.get("username"):
+        flash("You must be logged in")
+        return redirect("/")
+    
+    form_log = LogInOutForm()
+    return render_template("private.html", form_log=form_log, from_route="/private")
 
 @app.route("/secret")
 def secret():

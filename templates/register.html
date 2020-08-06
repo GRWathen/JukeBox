@@ -8,7 +8,7 @@
     <body>
         <h1>Register</h1>
         <div>Register for our site.</div>
-        <form method="POST">
+        <form>
             {{ form_register.hidden_tag() }}
             {% for field in form_register
                     if field.widget.input_type != "hidden" %}
@@ -20,7 +20,7 @@
                 {% endfor %}
             </div>
             {% endfor %}
-            <button type="submit">Register</button>
+            <button type="submit" formaction="/register" formmethod="POST">Register</button>
         </form>
     </body>
 </html>
