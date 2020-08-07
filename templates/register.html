@@ -9,14 +9,14 @@
         <h1>Register</h1>
         <div>Register for our site.</div>
         <form>
-            {{ form_register.hidden_tag() }}
-            {% for field in form_register
-                    if field.widget.input_type != "hidden" %}
+            {{ FORM_REGISTER.hidden_tag() }}
+            {% for FIELD in FORM_REGISTER
+                    if FIELD.widget.input_type != "hidden" %}
             <div>
-                {{ field.label }}
-                {{ field }}
-                {% for error in field.errors %}
-                {{ error }}
+                {{ FIELD.label }}
+                {{ FIELD }}
+                {% for ERROR in FIELD.errors %}
+                {{ ERROR }}
                 {% endfor %}
             </div>
             {% endfor %}

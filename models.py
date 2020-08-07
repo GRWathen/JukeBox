@@ -35,9 +35,9 @@ class User(db.Model):
         """Validate that user exists & password is correct.
         Return user if valid; else return False.
         """
-        u = User.query.filter_by(username=username).first()
-        if u and bcrypt.check_password_hash(u.password, pwd):
-            return u
+        user = User.query.filter_by(username=username).first()
+        if user and bcrypt.check_password_hash(user.password, pwd):
+            return user
         else:
             return False
 

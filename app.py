@@ -26,7 +26,7 @@ def fav_icon():
 def homepage(path):
     """Show homepage"""
     form_log = LogInOutForm()
-    return render_template("home.html", form_log=form_log, from_route="/")
+    return render_template("home.html", FORM_LOG=form_log, FROM_ROUTE="/")
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
@@ -63,7 +63,7 @@ def register():
             pacode = None
         
         if error:
-            return render_template("register.html", form_log=form_log, form_register=form_register, from_route="/register")
+            return render_template("register.html", FORM_LOG=form_log, FORM_REGISTER=form_register, FROM_ROUTE="/register")
 
         user = User.register(name, pwd, email, pacode)
         db.session.add(user)
@@ -81,14 +81,14 @@ def register():
             #...\nDETAIL:  Key (username)=(one) already exists.\n
             #...\nDETAIL:  Key (email)=(a@b.c) already exists.\n
             #...\nDETAIL:  Key (public_access_code)=(pac) already exists.\n
-            return render_template("register.html", form_log=form_log, form_register=form_register, from_route="/register")
+            return render_template("register.html", FORM_LOG=form_log, FORM_REGISTER=form_register, FROM_ROUTE="/register")
 
         session["username"] = user.username
         # on successful login, redirect to secret page
         flash("Logged In")
         return redirect("/")
     else:
-        return render_template("register.html", form_log=form_log, form_register=form_register, from_route="/register")
+        return render_template("register.html", FORM_LOG=form_log, FORM_REGISTER=form_register, FROM_ROUTE="/register")
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -142,10 +142,10 @@ def private():
         return redirect("/")
     
     form_log = LogInOutForm()
-    return render_template("private.html", form_log=form_log, from_route="/private")
+    return render_template("private.html", FORM_LOG=form_log, FROM_ROUTE="/private")
 
 @app.route("/secret")
 def secret():
     """Example page."""
     form_log = LogInOutForm()
-    return render_template("secret.html", form_log=form_log, from_route="/secret")
+    return render_template("secret.html", FORM_LOG=form_log, FROM_ROUTE="/secret")

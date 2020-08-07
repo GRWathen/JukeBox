@@ -1,10 +1,10 @@
 <form>
-    {{ form_log.hidden_tag() }}
-    <input id="from_route" name="from_route" type="hidden" value="{{ from_route }}">
+    {{ FORM_LOG.hidden_tag() }}
+    <input id="from_route" name="from_route" type="hidden" value="{{ FROM_ROUTE }}">
     <fieldset>
         <legend>&nbsp;JukeBox&nbsp;</legend>
         {% if "username" in session %}
-            <span>{{session["username"]}}</span>
+            <span>{{ session["username"] }}</span>
             <button type="submit" formaction="/logout" formmethod="POST">Log out</button>
         {% else %}
             <label>Username: <input id="log_username" name="log_username" type="text" placeholder="Enter your username"></label>
@@ -13,16 +13,8 @@
             <button type="submit" formaction="/register" formmethod="POST">Register</button>
         {% endif %}
     </fieldset>
-    <!--
-    {# with MESSAGES = get_flashed_messages(with_categories=true) #}
-    {# with MESSAGES = get_flashed_messages(category_filter=["error"]) #}
-    get_flashed_messages(with_categories, category_filter)
-    -->
     {% with MESSAGES = get_flashed_messages() %}
         {% if MESSAGES %}
-            <!--
-            {# for CAT, MSG in MESSAGES #}
-            -->
             {% for MSG in MESSAGES %}
             <div>{{ MSG }}</div>
             {% endfor %}
