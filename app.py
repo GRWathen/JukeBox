@@ -2,7 +2,7 @@ from flask import Flask, request, render_template, redirect, session, flash
 from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError
 from models import db, connect_db, User, Video, Playlist, Playlists_Videos
-from forms import LogInOutForm, RegisterForm
+from forms import AddVideoForm, AddVideoButtonForm, LogInOutForm, RegisterForm
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "Don't look at me."
@@ -26,7 +26,10 @@ def fav_icon():
 def homepage(path):
     """Show homepage"""
     form_log = LogInOutForm()
-    return render_template("home.html", FORM_LOG=form_log, FROM_ROUTE="/")
+    form_add_video_button = AddVideoButtonForm()
+    return render_template("/extends/home.html", FORM_LOG=form_log, FORM_ADD_VIDEO_BUTTON=form_add_video_button, FROM_ROUTE="/")
+
+# ---------- REGISTER / LOGIN / LOGOUT ----------
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
@@ -84,6 +87,7 @@ def register():
             return render_template("register.html", FORM_LOG=form_log, FORM_REGISTER=form_register, FROM_ROUTE="/register")
 
         session["username"] = user.username
+        session["user_id"] = user.id
         # on successful login, redirect to secret page
         flash("Logged In")
         return redirect("/")
@@ -116,7 +120,8 @@ def login():
         # authenticate will return a user or False
         user = User.authenticate(name, pwd)
         if user:
-            session["username"] = user.username  # keep logged in
+            session["username"] = user.username
+            session["user_id"] = user.id
             flash("Logged In")
             return redirect("/")
         else:
@@ -129,10 +134,13 @@ def logout():
     """Logs user out and redirects to homepage."""
     if session.get("username"):
         session.pop("username")
+        session.pop("user_id")
         flash("Logged Out")
     return redirect("/")
 
-# ==========
+# ==================================================
+
+# -------------------- TEMPORARY --------------------
 
 @app.route("/private")
 def private():
@@ -142,10 +150,87 @@ def private():
         return redirect("/")
     
     form_log = LogInOutForm()
-    return render_template("private.html", FORM_LOG=form_log, FROM_ROUTE="/private")
+    form_add_video_button = AddVideoButtonForm()
+    return render_template("/extends/private.html", FORM_LOG=form_log, FORM_ADD_VIDEO_BUTTON=form_add_video_button, FROM_ROUTE="/private")
 
 @app.route("/secret")
 def secret():
     """Example page."""
     form_log = LogInOutForm()
-    return render_template("secret.html", FORM_LOG=form_log, FROM_ROUTE="/secret")
+    form_add_video_button = AddVideoButtonForm()
+    return render_template("/extends/secret.html", FORM_LOG=form_log, FORM_ADD_VIDEO_BUTTON=form_add_video_button, FROM_ROUTE="/secret")
+
+# ==================================================
+
+# -------------------- VIDEOS --------------------
+
+#@app.route("/videos")
+#def videos_list():
+#    """List of videos"""
+#    return render_template("videos.html", TITLE="Videos", VIDEO=Video.query.order_by(Video.ast_name.asc(),Video.first_name.asc()).all())
+
+@app.route("/videos/new", methods=["GET", "POST"])
+def add_video():
+    """Add video"""
+    if not session.get("username"):
+        flash("You must be logged in")
+        return redirect("/")
+    
+    form = AddVideoForm()
+    if form.validate_on_submit():
+        try:
+            video = Video(
+                user_id=session["user_id"],
+                title=form.title.data,
+                artist=form.artist.data,
+                video_id=form.video_id.data)
+            db.session.add(video)
+            db.session.commit()
+
+            flash(f"{form.title.data} added")
+            return redirect("/")
+        except IntegrityError as e:
+            if len(e.orig.args) > 0:
+                flash(f"args:[{e.orig.args}]")
+            else:
+                flash("ERROR 0")
+            return render_template("add_video.html", FORM=form, FROM_ROUTE="/videos/new")
+    else:
+        return render_template("add_video.html", FORM=form, FROM_ROUTE="/videos/new")
+
+#@app.route("/videos/<int:id>")
+#def video_detail(id):
+#    """Video Detail"""
+#    video = Video.query.get(id)
+#    posts = Post.query.filter(Post.video_id==id).all()
+#    return render_template("video.html", TITLE=video.full_name, ##VIDEO=video, POSTS=posts)
+
+#@app.route("/videos/<int:id>/edit")
+#def edit_video(id):
+#    """Edit video"""
+#    video = User.query.get(id)
+#    return render_template("edit_video.html", TITLE="Edit video", ##VIDEO=video)
+
+#@app.route("/videos/<int:id>/edit", methods=["POST"])
+#def edit_video_post(id):
+#    """Edit video - POST"""
+#    video = User.query.get(id)
+#    video.first_name = request.form["first_name"]
+#    video.last_name = request.form["last_name"]
+#    video.image_url = request.form["image_url"]
+#    db.session.add(video)
+#    db.session.commit()
+#    return redirect("/videos")
+
+#@app.route("/videos/<int:id>/delete", methods=["POST"])
+#def delete_video(id):
+#    """Delete User"""
+#    video = User.query.get(id)
+#    for post in video.posts:
+#        video.posts.remove(post)
+#        db.session.delete(post)
+#    db.session.delete(User.query.get(id))
+#    db.session.commit()
+#    return redirect("/videos")
+
+# ==================================================

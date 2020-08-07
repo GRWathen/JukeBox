@@ -7,11 +7,10 @@
     </head>
     <body>
         {% include "include/banner.html" %}
-        <h1>Register</h1>
-        <div>Register for our site.</div>
+        <h1>Add Video</h1>
         <form>
-            {{ FORM_REGISTER.hidden_tag() }}
-            {% for FIELD in FORM_REGISTER
+            {{ FORM.hidden_tag() }}
+            {% for FIELD in FORM
                     if FIELD.widget.input_type != "hidden" %}
             <div>
                 {{ FIELD.label }}
@@ -21,7 +20,7 @@
                 {% endfor %}
             </div>
             {% endfor %}
-            <button type="submit" formaction="/register" formmethod="POST">Register</button>
+            <button type="submit" formaction="/videos/new" formmethod="POST">Add</button>
             <button type="submit" formaction="/" formmethod="POST" formnovalidate=True>Cancel</button>
             {% with MESSAGES = get_flashed_messages() %}
                 {% if MESSAGES %}

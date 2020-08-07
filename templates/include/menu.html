@@ -1,0 +1,20 @@
+<section>
+    <ul class="menu">
+        <li>Settings</li>
+        <li>Search</li>
+        <li>
+            <form>
+                {{ FORM_ADD_VIDEO_BUTTON.hidden_tag() }}
+                <button type="submit" formaction="/videos/new" formmethod="GET">Add Video</button>
+            </form>
+        </li>
+        <li><hr></li>
+        <li id="playlists">Playlists
+            <ul class="menu">
+                <li>Playlist</li>
+            </ul>
+        </li>
+        <li><hr></li>
+        <li>Add Playlist</li>
+    </ul>
+</section>

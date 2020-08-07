@@ -9,6 +9,8 @@ def connect_db(app):
     db.app = app
     db.init_app(app)
 
+# -------------------- User --------------------
+
 class User(db.Model):
     __tablename__ = "users"
 
@@ -41,6 +43,10 @@ class User(db.Model):
         else:
             return False
 
+# ==================================================
+
+# -------------------- Video --------------------
+
 class Video(db.Model):
     __tablename__ = "videos"
 
@@ -53,6 +59,12 @@ class Video(db.Model):
     artist = db.Column(db.String(50), nullable=False)
     video_id = db.Column(db.String, nullable=False)
     # TODO: unique - user_id/title/artist
+    db.UniqueConstraint(user_id, title, artist)
+#args:[('duplicate key value violates unique constraint "videos_user_id_title_artist_key"\nDETAIL: Key (user_id, title, artist)=(1, b, c) already exists.\n',)]
+
+# ==================================================
+
+# -------------------- Playlist --------------------
 
 class Playlist(db.Model):
     __tablename__ = "playlists"
@@ -65,12 +77,18 @@ class Playlist(db.Model):
     name = db.Column(db.String(50), nullable=False)
     # TODO: unique - user_id/name
 
+# ==================================================
+
+# -------------------- Playlists_Videos --------------------
+
 class Playlists_Videos(db.Model):
     __tablename__ = "playlists_videos"
 
     def __repr__(self):
-        return f"<Playlist:{self.user_id}  Video:{self.playlist_id}>"
+        return f"<Playlist:{self.playlist_id}  Video:{self.video_id}>"
     
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     playlist_id = db.Column(db.Integer, db.ForeignKey("playlists.id"))
     video_id = db.Column(db.Integer, db.ForeignKey("videos.id"))
+
+# ==================================================
