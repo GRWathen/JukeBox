@@ -51,7 +51,7 @@ class Video(db.Model):
     __tablename__ = "videos"
 
     def __repr__(self):
-        return f"<Video:{self.video_id} ID:{self.id}>"
+        return f"<Artist:{self.artist} Title:{self.title} Video:{self.video_id} User:{self.user_id} ID:{self.id}>"
     
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"))

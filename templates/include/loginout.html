@@ -3,21 +3,21 @@
     <input id="from_route" name="from_route" type="hidden" value="{{ FROM_ROUTE }}">
     <fieldset>
         <legend>&nbsp;JukeBox&nbsp;</legend>
-        {% if "username" in session %}
+        {%- if "username" in session -%}
             <span>{{ session["username"] }}</span>
             <button type="submit" formaction="/logout" formmethod="POST">Log out</button>
-        {% else %}
+        {%- else -%}
             <label>Username: <input id="log_username" name="log_username" type="text" placeholder="Enter your username"></label>
             <label>Password: <input id="log_password" name="log_password" type="password" placeholder="Enter your password"></label>
             <button type="submit" formaction="/login" formmethod="POST">Log in</button>
             <button type="submit" formaction="/register" formmethod="POST">Register</button>
-        {% endif %}
+        {%- endif -%}
     </fieldset>
-    {% with MESSAGES = get_flashed_messages() %}
-        {% if MESSAGES %}
-            {% for MSG in MESSAGES %}
+    {%- with MESSAGES = get_flashed_messages() -%}
+        {%- if MESSAGES -%}
+            {%- for MSG in MESSAGES -%}
             <div>{{ MSG }}</div>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
+            {%- endfor -%}
+        {%- endif -%}
+    {%- endwith %}
 </form>

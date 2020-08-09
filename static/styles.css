@@ -1,4 +1,15 @@
-.menu {
-    width: 100px;
+ul {
     list-style-type: none;
+}
+
+#library {
+    width: 200px;
+}
+
+#menu {
+    width: 100px;
+}
+
+ul {
+    padding-left: 1em;
 }

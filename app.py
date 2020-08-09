@@ -27,7 +27,17 @@ def homepage(path):
     """Show homepage"""
     form_log = LogInOutForm()
     form_add_video_button = AddVideoButtonForm()
-    return render_template("/extends/home.html", FORM_LOG=form_log, FORM_ADD_VIDEO_BUTTON=form_add_video_button, FROM_ROUTE="/")
+
+    print("***** HOME *****")
+    videos = None
+    if session.get("user_id"):
+        print(f"ID:{session['user_id']}")
+        videos = Video.query.filter(Video.user_id == session["user_id"]).order_by(Video.artist.asc(), Video.title.asc()).all()
+        print("---=== VIDEOS ===---")
+        print(videos)
+        print("====================")
+
+    return render_template("/extends/home.html", VIDEOS=videos, FORM_LOG=form_log, FORM_ADD_VIDEO_BUTTON=form_add_video_button, FROM_ROUTE="/")
 
 # ---------- REGISTER / LOGIN / LOGOUT ----------
 

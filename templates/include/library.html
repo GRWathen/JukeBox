@@ -1,0 +1,21 @@
+<section>
+{%- if VIDEOS != None -%}
+    {%- set artist = {"artist":None} -%}
+    <ul id="library">
+    {%- for VIDEO in VIDEOS -%}
+        {%- if VIDEO.artist != artist["artist"] -%}
+            {%- if artist["artist"] != None -%}
+            </ul>
+        </li>
+            {%- endif -%}
+            {%- if artist.update({"artist":VIDEO.artist}) -%}{%- endif -%}
+        <li>{{ artist["artist"] }}
+            <ul id="{{ artist["artist"] }}">
+        {%- endif -%}
+                <li>{{ VIDEO.title }}</li>
+    {%- endfor -%}
+            </ul>
+        </li>
+    </ul>
+{%- endif %}
+</section>
