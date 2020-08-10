@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, redirect, session, flash
+from flask import Flask, request, render_template, redirect, session, flash, make_response
 from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError
 from models import db, connect_db, User, Video, Playlist, Playlists_Videos
@@ -31,13 +31,9 @@ def homepage(path):
     print("***** HOME *****")
     videos = None
     if session.get("user_id"):
-        print(f"ID:{session['user_id']}")
         videos = Video.query.filter(Video.user_id == session["user_id"]).order_by(Video.artist.asc(), Video.title.asc()).all()
-        print("---=== VIDEOS ===---")
-        print(videos)
-        print("====================")
 
-    return render_template("/extends/home.html", VIDEOS=videos, FORM_LOG=form_log, FORM_ADD_VIDEO_BUTTON=form_add_video_button, FROM_ROUTE="/")
+    return render_template("/extends/home.html", VIDEOS=videos, VIDEO_ID=path, FORM_LOG=form_log, FORM_ADD_VIDEO_BUTTON=form_add_video_button, FROM_ROUTE="/")
 
 # ---------- REGISTER / LOGIN / LOGOUT ----------
 
@@ -208,12 +204,13 @@ def add_video():
     else:
         return render_template("add_video.html", FORM=form, FROM_ROUTE="/videos/new")
 
-#@app.route("/videos/<int:id>")
-#def video_detail(id):
-#    """Video Detail"""
+#@app.route("/videos/<int:video_id>")
+#def watch_video(video_id):
+#    """Watch video"""
 #    video = Video.query.get(id)
 #    posts = Post.query.filter(Post.video_id==id).all()
 #    return render_template("video.html", TITLE=video.full_name, ##VIDEO=video, POSTS=posts)
+#    return
 
 #@app.route("/videos/<int:id>/edit")
 #def edit_video(id):

@@ -12,7 +12,7 @@
         <li>{{ artist["artist"] }}
             <ul id="{{ artist["artist"] }}">
         {%- endif -%}
-                <li>{{ VIDEO.title }}</li>
+                <li><a href="/{{ VIDEO.video_id }}">{{ VIDEO.title }}</a></li>
     {%- endfor -%}
             </ul>
         </li>
