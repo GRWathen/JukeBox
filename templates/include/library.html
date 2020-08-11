@@ -9,10 +9,16 @@
         </li>
             {% endif %}
             {% if artist.update({"artist":VIDEO.artist}) %}{% endif %}
-        <li class="itemArtist"><span class="artist" onclick="toggleArtist(this)">&nbsp;{{ artist["artist"] }}&nbsp;</span>&nbsp;<i class="far fa-edit"></i>&nbsp;<i class="far fa-trash-alt"></i>
+        <li class="itemArtist">
+            <span class="artist" onclick="toggleArtist(this)">{{ artist["artist"] }}</span>
+            <span onclick="trashArtist(this)"><i class="far fa-trash-alt trash"></i></span>
             <ul id="{{ artist["artist"] }}">
         {% endif %}
-                <li><span class="video" onclick="playVideo('{{ VIDEO.video_id }}')">&nbsp;{{ VIDEO.title }}&nbsp;</span>&nbsp;<i class="far fa-edit"></i><span onclick="deleteVideo(this, '{{ VIDEO.id }}')"><i class="far fa-trash-alt"></i></span></li>
+                <li data-ID="{{ VIDEO.id }}">
+                    <i class="far fa-edit edit"></i>
+                    <span class="video" onclick="playVideo('{{ VIDEO.video_id }}')">{{ VIDEO.title }}</span>
+                    <span onclick="trashVideo(this)"><i class="far fa-trash-alt trash"></i></span>
+                </li>
     {% endfor %}
             </ul>
         </li>

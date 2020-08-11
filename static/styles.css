@@ -1,12 +1,16 @@
 ul {
-    padding-left: 1em;
+    padding-left: 0.5em;
     list-style-type: none;
 }
 
 .artist {
-    background-color: antiquewhite;
     text-decoration: underline;
+    font-weight: bold;
     cursor: default;
+}
+
+.edit {
+    color: gold;
 }
 
 .hidden {
@@ -17,15 +21,19 @@ ul {
     margin-bottom: 10px;
 }
 
+.trash {
+    color: red;
+}
+
 .video {
     text-decoration: underline;
     cursor: grab;
 }
 
 #library {
-    width: 220px;
+    width: 200px;
 }
 
 #menu {
-    width: 80px;
+    width: 75px;
 }

@@ -24,15 +24,31 @@ function playVideo(videoID) {
     video.setAttribute("src", `https://www.youtube-nocookie.com/embed/${videoID}?autoplay=1`);
 }
 
-async function deleteVideo(elem, id) {
+async function trashVideo(elem) {
+    const item = elem.parentNode;
+    deleteVideo(item);
+}
+
+async function deleteVideo(item) {
+    const id = item.getAttribute("data-ID")
     const response = await axios.post(`/videos/${id}/delete`);
     if (response.data != "OK") {
-        return;
+        return false;
     }
-    const item = elem.parentNode;
+
     const list = item.parentNode.parentNode;
     item.remove();
     if (list.getElementsByTagName("li").length === 0) {
         list.remove();
+    }
+
+    return true;
+}
+
+async function trashArtist(elem) {
+    const videos = elem.parentNode.getElementsByTagName("ul")[0].getElementsByTagName("li");
+    for (let i=0; i<videos.length; i++) {
+        const item = videos[i];
+        deleteVideo(item);
     }
 }
