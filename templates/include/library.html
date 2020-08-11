@@ -2,18 +2,18 @@
 {%- if VIDEOS != None -%}
     {%- set artist = {"artist":None} -%}
     <ul id="library">
-    {%- for VIDEO in VIDEOS -%}
+    {% for VIDEO in VIDEOS %}
         {%- if VIDEO.artist != artist["artist"] -%}
-            {%- if artist["artist"] != None -%}
+            {% if artist["artist"] != None %}
             </ul>
         </li>
-            {%- endif -%}
-            {%- if artist.update({"artist":VIDEO.artist}) -%}{%- endif -%}
-        <li>{{ artist["artist"] }}
+            {% endif %}
+            {% if artist.update({"artist":VIDEO.artist}) %}{% endif %}
+        <li class="itemArtist"><span class="artist" onclick="toggleArtist(this)">&nbsp;{{ artist["artist"] }}&nbsp;</span>&nbsp;<i class="far fa-edit"></i>&nbsp;<i class="far fa-trash-alt"></i>
             <ul id="{{ artist["artist"] }}">
-        {%- endif -%}
-                <li><a href="/{{ VIDEO.video_id }}">{{ VIDEO.title }}</a></li>
-    {%- endfor -%}
+        {% endif %}
+                <li><span class="video" onclick="playVideo('{{ VIDEO.video_id }}')">&nbsp;{{ VIDEO.title }}&nbsp;</span>&nbsp;<i class="far fa-edit"></i><span onclick="deleteVideo(this, '{{ VIDEO.id }}')"><i class="far fa-trash-alt"></i></span></li>
+    {% endfor %}
             </ul>
         </li>
     </ul>

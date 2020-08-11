@@ -28,12 +28,11 @@ def homepage(path):
     form_log = LogInOutForm()
     form_add_video_button = AddVideoButtonForm()
 
-    print("***** HOME *****")
     videos = None
     if session.get("user_id"):
         videos = Video.query.filter(Video.user_id == session["user_id"]).order_by(Video.artist.asc(), Video.title.asc()).all()
 
-    return render_template("/extends/home.html", VIDEOS=videos, VIDEO_ID=path, FORM_LOG=form_log, FORM_ADD_VIDEO_BUTTON=form_add_video_button, FROM_ROUTE="/")
+    return render_template("/extends/home.html", VIDEOS=videos, FORM_LOG=form_log, FORM_ADD_VIDEO_BUTTON=form_add_video_button, FROM_ROUTE="/")
 
 # ---------- REGISTER / LOGIN / LOGOUT ----------
 
@@ -229,15 +228,24 @@ def add_video():
 #    db.session.commit()
 #    return redirect("/videos")
 
-#@app.route("/videos/<int:id>/delete", methods=["POST"])
-#def delete_video(id):
-#    """Delete User"""
-#    video = User.query.get(id)
-#    for post in video.posts:
-#        video.posts.remove(post)
-#        db.session.delete(post)
-#    db.session.delete(User.query.get(id))
-#    db.session.commit()
-#    return redirect("/videos")
+@app.route("/videos/<int:id>/delete", methods=["POST"])
+def delete_video(id):
+    """Delete video"""
+    if not session.get("username"):
+        return "Not logged in"
+    
+    try:
+        video = Video.query.get(id)
+        if video is None:
+            raise Exception("None Exception")
+        
+        db.session.delete(video)
+        db.session.commit()
+
+        return "OK"
+    except IntegrityError as e:
+        return "IntegrityError"
+    except Exception as e:
+        return "Exception"
 
 # ==================================================
