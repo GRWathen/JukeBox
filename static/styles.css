@@ -1,6 +1,9 @@
 iframe {
-    width: calc(100vw);
-    height: calc(100vw * 0.60);
+    width: 100%;
+    height: -moz-calc((98vw - 100px - 200px - 5px) * 0.60);
+    height: -webkit-calc((98vw - 100px - 200px - 5px) * 0.60);
+    height: -o-calc((98vw - 100px - 200px - 5px) * 0.60);
+    height: calc((98vw - 100px - 200px - 5px) * 0.60);
 }
 
 ul {
@@ -54,6 +57,90 @@ ul {
     width: 200px;
 }
 
+#logInOut {
+    margin-bottom: 5px;
+}
+
 #menu {
     width: 100px;
+}
+
+#sectionContent {
+    display: inline-block;
+    width: -moz-calc(98vw - 100px - 200px - 5px);
+    width: -webkit-calc(98vw - 100px - 200px - 5px);
+    width: -o-calc(98vw - 100px - 200px - 5px);
+    width: calc(98vw - 100px - 200px - 5px);
+}
+
+#sectionLibrary {
+    vertical-align: top;
+    display: inline-block;
+}
+
+#sectionMenu {
+    vertical-align: top;
+    display: inline-block;
+}
+
+@media screen and (max-width: 1000px) {
+    iframe {
+        width: 100%;
+        height: -moz-calc((98vw - 200px - 5px) * 0.60);
+        height: -webkit-calc((98vw - 200px - 5px) * 0.60);
+        height: -o-calc((98vw - 200px - 5px) * 0.60);
+        height: calc((98vw - 200px - 5px) * 0.60);
+    }
+
+    #library {
+        width: 150px;
+    }
+
+    #sectionContent {
+        display: inline-block;
+        width: -moz-calc(98vw - 200px - 5px);
+        width: -webkit-calc(98vw - 200px - 5px);
+        width: -o-calc(98vw - 200px - 5px);
+        width: calc(98vw - 200px - 5px);
+    }
+
+    #sectionMenu {
+        vertical-align: top;
+        display: none;
+    }
+}
+
+@media screen and (max-width: 800px) {
+    iframe {
+        width: 100%;
+        height: -moz-calc((98vw - 5px) * 0.60);
+        height: -webkit-calc((98vw - 5px) * 0.60);
+        height: -o-calc((98vw - 5px) * 0.60);
+        height: calc((98vw - 5px) * 0.60);
+    }
+
+    #library {
+        display: block;
+        width: 200px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    #sectionContent {
+        display: inline-block;
+        width: -moz-calc(98vw - 5px);
+        width: -webkit-calc(98vw - 5px);
+        width: -o-calc(98vw - 5px);
+        width: calc(98vw - 5px);
+    }
+
+    #sectionLibrary {
+        display: block;
+        width: 100%;
+    }
+
+    #sectionMenu {
+        vertical-align: top;
+        display: none;
+    }
 }
