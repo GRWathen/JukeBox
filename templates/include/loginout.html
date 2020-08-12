@@ -4,7 +4,7 @@
     <fieldset>
         <legend>&nbsp;JukeBox&nbsp;</legend>
         {%- if "username" in session -%}
-            <span>{{ session["username"] }}</span>
+            <a href="/users/{{ USER_ID }}/edit"><span class="username">{{ session["username"] }}</span></a>
             <button type="submit" formaction="/logout" formmethod="POST">Log out</button>
         {%- else -%}
             <label>Username: <input id="log_username" name="log_username" type="text" placeholder="Enter your username"></label>

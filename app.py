@@ -2,7 +2,7 @@ from flask import Flask, request, render_template, redirect, session, flash, mak
 from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError
 from models import db, connect_db, User, Video, Playlist, Playlists_Videos
-from forms import AddVideoForm, AddVideoButtonForm, EditVideoForm, EditVideoButtonForm, LogInOutForm, RegisterForm
+from forms import AddVideoForm, AddVideoButtonForm, EditUserForm, EditVideoForm, EditVideoButtonForm, LogInOutForm, RegisterForm
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "Don't look at me."
@@ -33,7 +33,7 @@ def homepage(path):
     if session.get("user_id"):
         videos = Video.query.filter(Video.user_id == session["user_id"]).order_by(Video.artist.asc(), Video.title.asc()).all()
 
-    return render_template("/extends/home.html", VIDEOS=videos, FORM_LOG=form_log, FORM_ADD_VIDEO_BUTTON=form_add_video_button, FORM_EDIT_VIDEO_BUTTON=form_edit_video_button, FROM_ROUTE="/")
+    return render_template("/extends/home.html", USER_ID=session.get("user_id"), VIDEOS=videos, FORM_LOG=form_log, FORM_ADD_VIDEO_BUTTON=form_add_video_button, FORM_EDIT_VIDEO_BUTTON=form_edit_video_button, FROM_ROUTE="/")
 
 # ---------- REGISTER / LOGIN / LOGOUT ----------
 
@@ -46,28 +46,28 @@ def register():
     if form_register.validate_on_submit():
         error = False
 
-        name = form_register.reg_username.data
+        name = form_register.username.data
         if name is None or len(name) == 0:
             error = True
-            form_register.reg_username.errors.append("Username may not be blank")
+            form_register.username.errors.append("Username may not be blank")
         
-        pwd = form_register.reg_password.data
+        pwd = form_register.password.data
         if pwd is None or len(pwd) == 0:
             error = True
-            form_register.reg_password.errors.append("Password may not be blank")
+            form_register.password.errors.append("Password may not be blank")
         
-        confirm = form_register.reg_confirm.data
+        confirm = form_register.confirm.data
         if confirm != pwd:
             error = True
-            form_register.reg_confirm.errors.append("Confirm Password and Password must be the same")
+            form_register.confirm.errors.append("Confirm Password and Password must be the same")
         
         # TODO: Validate email
-        email = form_register.reg_email.data
+        email = form_register.email.data
         if email is None or len(email) == 0:
             error = True
-            form_register.reg_email.errors.append("Email may not be blank")
+            form_register.email.errors.append("Email may not be blank")
         
-        pacode = form_register.reg_pacode.data
+        pacode = form_register.public_access_code.data
         if pacode is None or len(pacode) == 0:
             pacode = None
         
@@ -170,6 +170,51 @@ def secret():
 
 # ==================================================
 
+# -------------------- USERS --------------------
+
+@app.route("/users/<int:id>/edit", methods=["GET", "POST"])
+def edit_user(id):
+    """Edit user"""
+    if not session.get("username"):
+        flash("You must be logged in")
+        return redirect("/")
+    if id != session.get("user_id"):
+        flash("Invalid user")
+        return redirect("/")
+
+    user = None
+    try:
+        user = User.query.get(id)
+        if user is None:
+            flash("None Exception")
+            return redirect("/")
+    except:
+        flash("Edit User Error")
+        return redirect("/")
+
+    form = EditUserForm(obj=user)
+    if form.validate_on_submit():
+        try:
+            print(f"U:{user}")
+            print(f"U:{user.public_access_code}")
+            form.populate_obj(user)
+            print(f"F:{form.public_access_code.data}")
+            db.session.add(user)
+            db.session.commit()
+
+            flash(f"{user.username} edited")
+            return redirect("/")
+        except IntegrityError as e:
+            if len(e.orig.args) > 0:
+                flash(f"args:[{e.orig.args}]")
+            else:
+                flash("ERROR")
+            return render_template("edit_user.html", FORM=form, USER_ID=id, USERNAME=user.username, FROM_ROUTE=f"/users/{id}/edit")
+    else:
+        return render_template("edit_user.html", FORM=form, USER_ID=id, USERNAME=user.username, FROM_ROUTE=f"/users/{id}/edit")
+
+# ==================================================
+
 # -------------------- VIDEOS --------------------
 
 #@app.route("/videos")
@@ -226,13 +271,14 @@ def edit_video(id):
         video = Video.query.get(id)
         if video is None:
             raise Exception("None Exception")
+        if video.user_id != session.get("user_id"):
+            raise Exception("Invalid User")
     except:
         flash("Edit Video Error")
         return redirect("/")
 
     form = EditVideoForm(obj=video)
     if form.validate_on_submit():
-        print(form.title.data)
         try:
             form.populate_obj(video)
             db.session.add(video)
@@ -249,17 +295,6 @@ def edit_video(id):
     else:
         return render_template("edit_video.html", FORM=form, VIDEO_ID=id, FROM_ROUTE=f"/videos/{id}/edit")
 
-#@app.route("/videos/<int:id>/edit", methods=["POST"])
-#def edit_video_post(id):
-#    """Edit video - POST"""
-#    video = User.query.get(id)
-#    video.first_name = request.form["first_name"]
-#    video.last_name = request.form["last_name"]
-#    video.image_url = request.form["image_url"]
-#    db.session.add(video)
-#    db.session.commit()
-#    return redirect("/videos")
-
 @app.route("/videos/<int:id>/delete", methods=["POST"])
 def delete_video(id):
     """Delete video"""
@@ -270,6 +305,8 @@ def delete_video(id):
         video = Video.query.get(id)
         if video is None:
             raise Exception("None Exception")
+        if video.user_id != session.get("user_id"):
+            raise Exception("Invalid User")
         
         db.session.delete(video)
         db.session.commit()
