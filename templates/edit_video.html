@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>JukeBox</title>
+        <link rel="stylesheet" href="static/styles.css">
+        <script src="static/scripts.js"></script>
+    </head>
+    <body>
+        {%- include "include/banner.html" -%}
+        <h1>Edit Video</h1>
+        <form>
+            {{ FORM.hidden_tag() }}
+            {%- for FIELD in FORM
+                    if FIELD.widget.input_type != "hidden" -%}
+            <div>
+                {{ FIELD.label }}
+                {{ FIELD }}
+                {%- for ERROR in FIELD.errors -%}
+                {{ ERROR }}
+                {%- endfor -%}
+            </div>
+            {%- endfor -%}
+            <button type="submit" formaction="/videos/{{ VIDEO_ID }}/edit" formmethod="POST">Save</button>
+            <button type="submit" formaction="/" formmethod="POST" formnovalidate=True>Cancel</button>
+            {%- with MESSAGES = get_flashed_messages() -%}
+                {%- if MESSAGES -%}
+                    {%- for MSG in MESSAGES -%}
+                    <div>{{ MSG }}</div>
+                    {%- endfor -%}
+                {%- endif -%}
+            {%- endwith -%}
+        </form>
+    </body>
+</html>

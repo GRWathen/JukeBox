@@ -39,3 +39,21 @@ class AddVideoButtonForm(FlaskForm):
     """Form for add video button"""
 
 # ==================================================
+
+# -------------------- EditVideoForm --------------------
+
+class EditVideoForm(FlaskForm):
+
+    """Form for editing a video"""
+    title = StringField("Title", validators=[InputRequired()])
+    artist = StringField("Artist", validators=[InputRequired()])
+    video_id = StringField("Video ID")
+
+# ==================================================
+
+# -------------------- EditVideoButtonForm --------------------
+
+class EditVideoButtonForm(FlaskForm):
+    """Form for edit video button"""
+
+# ==================================================

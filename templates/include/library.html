@@ -15,7 +15,10 @@
             <ul id="{{ artist["artist"] }}">
         {% endif %}
                 <li data-ID="{{ VIDEO.id }}">
-                    <i class="far fa-edit edit"></i>
+                    <form class="editForm">
+                        {{ FORM_EDIT_VIDEO_BUTTON.hidden_tag() }}
+                        <button class="editButton" type="submit" formaction="/videos/{{ VIDEO.id }}/edit" formmethod="GET"><i class="far fa-edit edit"></i></button>
+                    </form>
                     <span class="video" onclick="playVideo('{{ VIDEO.video_id }}')">{{ VIDEO.title }}</span>
                     <span onclick="trashVideo(this)"><i class="far fa-trash-alt trash"></i></span>
                 </li>

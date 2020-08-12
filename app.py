@@ -2,7 +2,7 @@ from flask import Flask, request, render_template, redirect, session, flash, mak
 from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError
 from models import db, connect_db, User, Video, Playlist, Playlists_Videos
-from forms import AddVideoForm, AddVideoButtonForm, LogInOutForm, RegisterForm
+from forms import AddVideoForm, AddVideoButtonForm, EditVideoForm, EditVideoButtonForm, LogInOutForm, RegisterForm
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "Don't look at me."
@@ -27,12 +27,13 @@ def homepage(path):
     """Show homepage"""
     form_log = LogInOutForm()
     form_add_video_button = AddVideoButtonForm()
+    form_edit_video_button = EditVideoButtonForm()
 
     videos = None
     if session.get("user_id"):
         videos = Video.query.filter(Video.user_id == session["user_id"]).order_by(Video.artist.asc(), Video.title.asc()).all()
 
-    return render_template("/extends/home.html", VIDEOS=videos, FORM_LOG=form_log, FORM_ADD_VIDEO_BUTTON=form_add_video_button, FROM_ROUTE="/")
+    return render_template("/extends/home.html", VIDEOS=videos, FORM_LOG=form_log, FORM_ADD_VIDEO_BUTTON=form_add_video_button, FORM_EDIT_VIDEO_BUTTON=form_edit_video_button, FROM_ROUTE="/")
 
 # ---------- REGISTER / LOGIN / LOGOUT ----------
 
@@ -156,14 +157,16 @@ def private():
     
     form_log = LogInOutForm()
     form_add_video_button = AddVideoButtonForm()
-    return render_template("/extends/private.html", FORM_LOG=form_log, FORM_ADD_VIDEO_BUTTON=form_add_video_button, FROM_ROUTE="/private")
+    form_edit_video_button = EditVideoButtonForm()
+    return render_template("/extends/private.html", FORM_LOG=form_log, FORM_ADD_VIDEO_BUTTON=form_add_video_button, FORM_EDIT_VIDEO_BUTTON=form_edit_video_button, FROM_ROUTE="/private")
 
 @app.route("/secret")
 def secret():
     """Example page."""
     form_log = LogInOutForm()
     form_add_video_button = AddVideoButtonForm()
-    return render_template("/extends/secret.html", FORM_LOG=form_log, FORM_ADD_VIDEO_BUTTON=form_add_video_button, FROM_ROUTE="/secret")
+    form_edit_video_button = EditVideoButtonForm()
+    return render_template("/extends/secret.html", FORM_LOG=form_log, FORM_ADD_VIDEO_BUTTON=form_add_video_button, FORM_EDIT_VIDEO_BUTTON=form_edit_video_button, FROM_ROUTE="/secret")
 
 # ==================================================
 
@@ -198,7 +201,7 @@ def add_video():
             if len(e.orig.args) > 0:
                 flash(f"args:[{e.orig.args}]")
             else:
-                flash("ERROR 0")
+                flash("ERROR")
             return render_template("add_video.html", FORM=form, FROM_ROUTE="/videos/new")
     else:
         return render_template("add_video.html", FORM=form, FROM_ROUTE="/videos/new")
@@ -211,11 +214,40 @@ def add_video():
 #    return render_template("video.html", TITLE=video.full_name, ##VIDEO=video, POSTS=posts)
 #    return
 
-#@app.route("/videos/<int:id>/edit")
-#def edit_video(id):
-#    """Edit video"""
-#    video = User.query.get(id)
-#    return render_template("edit_video.html", TITLE="Edit video", ##VIDEO=video)
+@app.route("/videos/<int:id>/edit", methods=["GET", "POST"])
+def edit_video(id):
+    """Edit video"""
+    if not session.get("username"):
+        flash("You must be logged in")
+        return redirect("/")
+
+    video = None
+    try:
+        video = Video.query.get(id)
+        if video is None:
+            raise Exception("None Exception")
+    except:
+        flash("Edit Video Error")
+        return redirect("/")
+
+    form = EditVideoForm(obj=video)
+    if form.validate_on_submit():
+        print(form.title.data)
+        try:
+            form.populate_obj(video)
+            db.session.add(video)
+            db.session.commit()
+
+            flash(f"{form.title.data} edited")
+            return redirect("/")
+        except IntegrityError as e:
+            if len(e.orig.args) > 0:
+                flash(f"args:[{e.orig.args}]")
+            else:
+                flash("ERROR")
+            return render_template("edit_video.html", FORM=form, VIDEO_ID=id, FROM_ROUTE=f"/videos/{id}/edit")
+    else:
+        return render_template("edit_video.html", FORM=form, VIDEO_ID=id, FROM_ROUTE=f"/videos/{id}/edit")
 
 #@app.route("/videos/<int:id>/edit", methods=["POST"])
 #def edit_video_post(id):
@@ -232,7 +264,7 @@ def add_video():
 def delete_video(id):
     """Delete video"""
     if not session.get("username"):
-        return "Not logged in"
+        return "You must be logged in"
     
     try:
         video = Video.query.get(id)

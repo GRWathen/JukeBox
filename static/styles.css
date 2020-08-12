@@ -13,6 +13,16 @@ ul {
     color: gold;
 }
 
+.editButton {
+    border: none;
+    padding: 0px;
+    background: none;
+}
+
+.editForm {
+    display: inline;
+}
+
 .hidden {
     display: none;
 }
