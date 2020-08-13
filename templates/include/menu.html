@@ -10,13 +10,26 @@
         </li>
         <li><hr></li>
         <li id="playlists">Playlists
-            <ul class="menu">
-                <li>Playlist</li>
+        {%- if PLAYLISTS != None -%}
+            <ul>
+            {% for PLAYLIST in PLAYLISTS %}
+                <li data-ID="{{ PLAYLIST.id }}">
+                    <form class="editForm">
+                        {{ FORM_EDIT_PLAYLIST_BUTTON.hidden_tag() }}
+                        <button class="editButton" type="submit" formaction="/playlists/{{ PLAYLIST.id }}/edit" formmethod="GET"><i class="far fa-edit edit"></i></button>
+                    </form>
+                    <span class="playlist" onclick="playPlaylist()">{{ PLAYLIST.name }}</span>
+                    <span onclick="trashPlaylist(this)"><i class="far fa-trash-alt trash"></i></span>
+                </li>
+            {% endfor %}
             </ul>
+        {%- endif %}
         </li>
         <li><hr></li>
-        <li>Add Playlist</li>
+            <form>
+                {{ FORM_ADD_PLAYLIST_BUTTON.hidden_tag() }}
+                <button type="submit" formaction="/playlists/new" formmethod="GET">Add Playlist</button>
+            </form>
         <li><hr></li>
-        <li>About</li>
     </ul>
 </section>

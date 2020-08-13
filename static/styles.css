@@ -1,9 +1,18 @@
+body {
+    background-color: slategray;
+    background-image: url("background-jukebox.png");
+    background-position: center top;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
 iframe {
     width: 100%;
-    height: -moz-calc((98vw - 100px - 200px - 5px) * 0.60);
-    height: -webkit-calc((98vw - 100px - 200px - 5px) * 0.60);
-    height: -o-calc((98vw - 100px - 200px - 5px) * 0.60);
-    height: calc((98vw - 100px - 200px - 5px) * 0.60);
+    height: -moz-calc((98vw - 200px - 200px - 5px) * 0.60);
+    height: -webkit-calc((98vw - 200px - 200px - 5px) * 0.60);
+    height: -o-calc((98vw - 200px - 200px - 5px) * 0.60);
+    height: calc((98vw - 200px - 200px - 5px) * 0.60);
+    padding: 5px;
 }
 
 ul {
@@ -39,6 +48,11 @@ ul {
     margin-bottom: 10px;
 }
 
+.playlist {
+    text-decoration: underline;
+    cursor: grab;
+}
+
 .trash {
     color: red;
 }
@@ -62,15 +76,15 @@ ul {
 }
 
 #menu {
-    width: 100px;
+    width: 200px;
 }
 
 #sectionContent {
     display: inline-block;
-    width: -moz-calc(98vw - 100px - 200px - 5px);
-    width: -webkit-calc(98vw - 100px - 200px - 5px);
-    width: -o-calc(98vw - 100px - 200px - 5px);
-    width: calc(98vw - 100px - 200px - 5px);
+    width: -moz-calc(98vw - 200px - 200px - 5px);
+    width: -webkit-calc(98vw - 200px - 200px - 5px);
+    width: -o-calc(98vw - 200px - 200px - 5px);
+    width: calc(98vw - 200px - 200px - 5px);
 }
 
 #sectionLibrary {

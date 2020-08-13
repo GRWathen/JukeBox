@@ -2,7 +2,7 @@ from flask import Flask, request, render_template, redirect, session, flash, mak
 from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError
 from models import db, connect_db, User, Video, Playlist, Playlists_Videos
-from forms import AddVideoForm, AddVideoButtonForm, EditUserForm, EditVideoForm, EditVideoButtonForm, LogInOutForm, RegisterForm
+from forms import AddPlaylistForm, AddPlaylistButtonForm, AddVideoForm, AddVideoButtonForm, EditUserForm, EditPlaylistForm, EditPlaylistButtonForm, EditVideoForm, EditVideoButtonForm, LogInOutForm, RegisterForm
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "Don't look at me."
@@ -26,14 +26,18 @@ def fav_icon():
 def homepage(path):
     """Show homepage"""
     form_log = LogInOutForm()
+    form_add_playlist_button = AddPlaylistButtonForm()
     form_add_video_button = AddVideoButtonForm()
+    form_edit_playlist_button = EditPlaylistButtonForm()
     form_edit_video_button = EditVideoButtonForm()
 
+    playlists = None
     videos = None
     if session.get("user_id"):
+        playlists = Playlist.query.filter(Playlist.user_id == session["user_id"]).order_by(Playlist.name.asc()).all()
         videos = Video.query.filter(Video.user_id == session["user_id"]).order_by(Video.artist.asc(), Video.title.asc()).all()
 
-    return render_template("/extends/home.html", USER_ID=session.get("user_id"), VIDEOS=videos, FORM_LOG=form_log, FORM_ADD_VIDEO_BUTTON=form_add_video_button, FORM_EDIT_VIDEO_BUTTON=form_edit_video_button, FROM_ROUTE="/")
+    return render_template("/extends/home.html", USER_ID=session.get("user_id"), PLAYLISTS=playlists, VIDEOS=videos, FORM_LOG=form_log, FORM_ADD_PLAYLIST_BUTTON=form_add_playlist_button, FORM_ADD_VIDEO_BUTTON=form_add_video_button, FORM_EDIT_PLAYLIST_BUTTON=form_edit_playlist_button, FORM_EDIT_VIDEO_BUTTON=form_edit_video_button, FROM_ROUTE="/")
 
 # ---------- REGISTER / LOGIN / LOGOUT ----------
 
@@ -212,6 +216,96 @@ def edit_user(id):
             return render_template("edit_user.html", FORM=form, USER_ID=id, USERNAME=user.username, FROM_ROUTE=f"/users/{id}/edit")
     else:
         return render_template("edit_user.html", FORM=form, USER_ID=id, USERNAME=user.username, FROM_ROUTE=f"/users/{id}/edit")
+
+# ==================================================
+
+# -------------------- PLAYLISTS --------------------
+
+@app.route("/playlists/new", methods=["GET", "POST"])
+def add_playlist():
+    """Add playlist"""
+    if not session.get("username"):
+        flash("You must be logged in")
+        return redirect("/")
+
+    form = AddPlaylistForm()
+    if form.validate_on_submit():
+        try:
+            playlist = Playlist(
+                user_id=session["user_id"],
+                name=form.name.data)
+            db.session.add(playlist)
+            db.session.commit()
+
+            flash(f"{form.name.data} added")
+            return redirect("/")
+        except IntegrityError as e:
+            if len(e.orig.args) > 0:
+                flash(f"args:[{e.orig.args}]")
+            else:
+                flash("ERROR")
+            return render_template("add_playlist.html", FORM=form, FROM_ROUTE="/playlists/new")
+    else:
+        return render_template("add_playlist.html", FORM=form, FROM_ROUTE="/playlists/new")
+
+
+@app.route("/playlists/<int:id>/edit", methods=["GET", "POST"])
+def edit_playlist(id):
+    """Edit playlist"""
+    if not session.get("username"):
+        flash("You must be logged in")
+        return redirect("/")
+
+    playlist = None
+    try:
+        playlist = Playlist.query.get(id)
+        if playlist is None:
+            raise Exception("None Exception")
+        if playlist.user_id != session.get("user_id"):
+            raise Exception("Invalid User")
+    except:
+        flash("Edit Playlist Error")
+        return redirect("/")
+
+    form = EditPlaylistForm(obj=playlist)
+    if form.validate_on_submit():
+        try:
+            form.populate_obj(playlist)
+            db.session.add(playlist)
+            db.session.commit()
+
+            flash(f"{form.name.data} edited")
+            return redirect("/")
+        except IntegrityError as e:
+            if len(e.orig.args) > 0:
+                flash(f"args:[{e.orig.args}]")
+            else:
+                flash("ERROR")
+            return render_template("edit_playlist.html", FORM=form, PLAYLIST_ID=id, FROM_ROUTE=f"/playlist/{id}/edit")
+    else:
+        return render_template("edit_playlist.html", FORM=form, PLAYLIST_ID=id, FROM_ROUTE=f"/playlists/{id}/edit")
+
+@app.route("/playlists/<int:id>/delete", methods=["POST"])
+def delete_playlist(id):
+    """Delete playlist"""
+    if not session.get("username"):
+        return "You must be logged in"
+
+    try:
+        playlist = Playlist.query.get(id)
+        if playlist is None:
+            raise Exception("None Exception")
+        if playlist.user_id != session.get("user_id"):
+            raise Exception("Invalid User")
+
+        db.session.delete(playlist)
+        db.session.commit()
+
+        return "OK"
+    except IntegrityError as e:
+        return "IntegrityError"
+    except Exception as e:
+        return "Exception"
 
 # ==================================================
 

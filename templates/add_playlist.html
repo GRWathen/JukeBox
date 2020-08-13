@@ -2,13 +2,13 @@
 <html>
     <head>
         <title>JukeBox</title>
-        <link rel="stylesheet" href="../../static/reset.css">
-        <link rel="stylesheet" href="../../static/styles.css">
-        <script src="../../static/scripts.js"></script>
+        <link rel="stylesheet" href="../static/reset.css">
+        <link rel="stylesheet" href="../static/styles.css">
+        <script src="../static/scripts.js"></script>
     </head>
     <body>
         {%- include "include/banner.html" -%}
-        <h1>Edit User - {{ USERNAME }}</h1>
+        <h1>Add Playlist</h1>
         <form>
             {{ FORM.hidden_tag() }}
             {%- for FIELD in FORM
@@ -21,7 +21,7 @@
                 {%- endfor -%}
             </div>
             {%- endfor -%}
-            <button type="submit" formaction="/users/{{ USER_ID }}/edit" formmethod="POST">Save</button>
+            <button type="submit" formaction="/playlists/new" formmethod="POST">Add</button>
             <button type="submit" formaction="/" formmethod="POST" formnovalidate=True>Cancel</button>
             {%- with MESSAGES = get_flashed_messages() -%}
                 {%- if MESSAGES -%}

@@ -58,7 +58,7 @@ class Video(db.Model):
     title = db.Column(db.String(50), nullable=False)
     artist = db.Column(db.String(50), nullable=False)
     video_id = db.Column(db.String, nullable=False)
-    # TODO: unique - user_id/title/artist
+
     db.UniqueConstraint(user_id, title, artist)
 #args:[('duplicate key value violates unique constraint "videos_user_id_title_artist_key"\nDETAIL: Key (user_id, title, artist)=(1, b, c) already exists.\n',)]
 
@@ -75,7 +75,8 @@ class Playlist(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
     name = db.Column(db.String(50), nullable=False)
-    # TODO: unique - user_id/name
+
+    db.UniqueConstraint(user_id, name)
 
 # ==================================================
 

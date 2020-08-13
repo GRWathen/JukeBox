@@ -19,14 +19,32 @@ function toggleArtist(elem) {
     }
 }
 
+function playPlaylist() {
+}
+
 function playVideo(videoID) {
     const video = document.getElementById("video");
     video.setAttribute("src", `https://www.youtube-nocookie.com/embed/${videoID}?autoplay=1`);
 }
 
+async function trashPlaylist(elem) {
+    const item = elem.parentNode;
+    deletePlaylist(item);
+}
+
 async function trashVideo(elem) {
     const item = elem.parentNode;
     deleteVideo(item);
+}
+
+async function deletePlaylist(item) {
+    const id = item.getAttribute("data-ID")
+    const response = await axios.post(`/playlists/${id}/delete`);
+    if (response.data != "OK") {
+        return false;
+    }
+    item.remove();
+    return true;
 }
 
 async function deleteVideo(item) {
