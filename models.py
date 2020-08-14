@@ -62,6 +62,8 @@ class Video(db.Model):
     db.UniqueConstraint(user_id, title, artist)
 #args:[('duplicate key value violates unique constraint "videos_user_id_title_artist_key"\nDETAIL: Key (user_id, title, artist)=(1, b, c) already exists.\n',)]
 
+    playlists = db.relationship("Playlist", secondary="playlists_videos")
+
 # ==================================================
 
 # -------------------- Playlist --------------------
@@ -77,6 +79,8 @@ class Playlist(db.Model):
     name = db.Column(db.String(50), nullable=False)
 
     db.UniqueConstraint(user_id, name)
+
+    videos = db.relationship("Video", secondary="playlists_videos")
 
 # ==================================================
 

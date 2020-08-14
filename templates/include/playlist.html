@@ -14,7 +14,7 @@
                 {% endif %}
                 {% if ARTIST.update({"ARTIST":0}) %}{% endif %}
         <li class="itemArtist">
-            <input type="checkbox" id="{{ FIELD.id|int }}" name="{{ FIELD.name }}">
+            <input type="checkbox" id="{{ FIELD.id|int }}" name="{{ FIELD.name }}" onclick="checkboxArtist(this)">
             <label class="artist" onclick="toggleArtist(this)">{{ FIELD.name }}</label>
             <ul id="{{ FIELD.name }}">
             {% else %}

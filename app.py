@@ -237,7 +237,7 @@ def add_playlist():
     for video in videos:
         if video.artist != artist:
             artist = video.artist
-            setattr(CopyOfAddPlaylistForm, artist, BooleanField(artist))
+            setattr(CopyOfAddPlaylistForm, "[" + artist + "]", BooleanField(artist))
         setattr(CopyOfAddPlaylistForm, str(video.id), BooleanField(video.title))
     form = CopyOfAddPlaylistForm()
 
@@ -251,10 +251,16 @@ def add_playlist():
 
             flash(f"{form.name.data} added")
 
-            print("---=== FORM ===---")
-            for k, v in form.data.items():
-                print(k, v)
-            print("********************")
+            for key, value in form.data.items():
+                if not key.isdigit():
+                    continue
+                if not value:
+                    continue
+                join = Playlists_Videos(
+                    playlist_id=playlist.id,
+                    video_id=int(key))
+                db.session.add(join)
+            db.session.commit()
 
             return redirect("/")
         except IntegrityError as e:

@@ -19,6 +19,14 @@ function toggleArtist(elem) {
     }
 }
 
+function checkboxArtist(elem) {
+    const videos = elem.parentNode.getElementsByTagName("ul")[0].getElementsByTagName("li");
+    for (let i = 0; i < videos.length; i++) {
+        const checkbox = videos[i].getElementsByTagName("input")[0]
+        checkbox.checked = elem.checked;
+    }
+}
+
 function playPlaylist() {
 }
 
