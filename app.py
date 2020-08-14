@@ -3,6 +3,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError
 from models import db, connect_db, User, Video, Playlist, Playlists_Videos
 from forms import AddPlaylistForm, AddPlaylistButtonForm, AddVideoForm, AddVideoButtonForm, EditUserForm, EditPlaylistForm, EditPlaylistButtonForm, EditVideoForm, EditVideoButtonForm, LogInOutForm, RegisterForm
+from wtforms import BooleanField
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "Don't look at me."
@@ -228,7 +229,18 @@ def add_playlist():
         flash("You must be logged in")
         return redirect("/")
 
-    form = AddPlaylistForm()
+    videos = Video.query.filter(Video.user_id == session["user_id"]).order_by(Video.artist.asc(), Video.title.asc()).all()
+
+    CopyOfAddPlaylistForm = type('CopyOfAddPlaylistForm', AddPlaylistForm.__bases__, dict(AddPlaylistForm.__dict__))
+
+    artist = None
+    for video in videos:
+        if video.artist != artist:
+            artist = video.artist
+            setattr(CopyOfAddPlaylistForm, artist, BooleanField(artist))
+        setattr(CopyOfAddPlaylistForm, str(video.id), BooleanField(video.title))
+    form = CopyOfAddPlaylistForm()
+
     if form.validate_on_submit():
         try:
             playlist = Playlist(
@@ -238,16 +250,21 @@ def add_playlist():
             db.session.commit()
 
             flash(f"{form.name.data} added")
+
+            print("---=== FORM ===---")
+            for k, v in form.data.items():
+                print(k, v)
+            print("********************")
+
             return redirect("/")
         except IntegrityError as e:
             if len(e.orig.args) > 0:
                 flash(f"args:[{e.orig.args}]")
             else:
                 flash("ERROR")
-            return render_template("add_playlist.html", FORM=form, FROM_ROUTE="/playlists/new")
+            return render_template("add_playlist.html", VIDEOS=videos, FORM=form, FROM_ROUTE="/playlists/new")
     else:
-        return render_template("add_playlist.html", FORM=form, FROM_ROUTE="/playlists/new")
-
+        return render_template("add_playlist.html", VIDEOS=videos, FORM=form, FROM_ROUTE="/playlists/new")
 
 @app.route("/playlists/<int:id>/edit", methods=["GET", "POST"])
 def edit_playlist(id):

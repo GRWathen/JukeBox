@@ -1,18 +1,18 @@
 <section id="sectionLibrary">
 {%- if VIDEOS != None -%}
-    {%- set artist = {"artist":None} -%}
+    {%- set ARTIST = {"artist":None} -%}
     <ul id="library">
     {% for VIDEO in VIDEOS %}
-        {%- if VIDEO.artist != artist["artist"] -%}
-            {% if artist["artist"] != None %}
+        {%- if VIDEO.artist != ARTIST["artist"] -%}
+            {% if ARTIST["artist"] != None %}
             </ul>
         </li>
             {% endif %}
-            {% if artist.update({"artist":VIDEO.artist}) %}{% endif %}
+            {% if ARTIST.update({"artist":VIDEO.artist}) %}{% endif %}
         <li class="itemArtist">
-            <span class="artist" onclick="toggleArtist(this)">{{ artist["artist"] }}</span>
+            <span class="artist" onclick="toggleArtist(this)">{{ ARTIST["artist"] }}</span>
             <span onclick="trashArtist(this)"><i class="far fa-trash-alt trash"></i></span>
-            <ul id="{{ artist["artist"] }}">
+            <ul id="{{ ARTIST["artist"] }}">
         {% endif %}
                 <li data-ID="{{ VIDEO.id }}">
                     <form class="editForm">
@@ -23,8 +23,10 @@
                     <span onclick="trashVideo(this)"><i class="far fa-trash-alt trash"></i></span>
                 </li>
     {% endfor %}
+    {% if ARTIST["artist"] != None %}
             </ul>
         </li>
+    {% endif %}
     </ul>
 {%- endif %}
 </section>

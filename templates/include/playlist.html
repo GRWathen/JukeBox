@@ -1,0 +1,36 @@
+<section id="sectionPlaylist">
+    {%- set COUNT = {"COUNT":0} -%}
+    {%- set ARTIST = {"ARTIST":None} -%}
+    <ul id="playlist">
+    {%- for FIELD in FORM
+            if FIELD.widget.input_type != "hidden" -%}
+        {%- if COUNT["COUNT"] == 0 -%}
+            {% if COUNT.update({"COUNT":1}) %}{% endif %}
+        {%- else -%}
+            {%- if FIELD.id|int == 0 -%}
+                {% if ARTIST["ARTIST"] != None %}
+            </ul>
+        </li>
+                {% endif %}
+                {% if ARTIST.update({"ARTIST":0}) %}{% endif %}
+        <li class="itemArtist">
+            <input type="checkbox" id="{{ FIELD.id|int }}" name="{{ FIELD.name }}">
+            <label class="artist" onclick="toggleArtist(this)">{{ FIELD.name }}</label>
+            <ul id="{{ FIELD.name }}">
+            {% else %}
+                <li data-ID="{{ FIELD.id|int }}">
+                    {{ FIELD }}
+                    {{ FIELD.label }}
+                </li>
+            {% endif %}
+        {%- endif -%}
+        {%- for ERROR in FIELD.errors -%}
+        {{ ERROR }}
+        {%- endfor -%}
+    {%- endfor -%}
+    {% if ARTIST["ARTIST"] != None %}
+            </ul>
+        </li>
+    {% endif %}
+    </ul>
+</section>
