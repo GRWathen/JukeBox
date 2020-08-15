@@ -305,8 +305,6 @@ def edit_playlist(id):
     video_IDs = set(())
     for video in playlist.videos:
         video_IDs.add(video.id)
-    print(f"Videos in Playlist:{video_IDs}")
-    print(f"Videos in Playlist:{playlist.videos}")
 
     videos = Video.query.filter(Video.user_id == session["user_id"]).order_by(Video.artist.asc(), Video.title.asc()).all()
 
@@ -325,57 +323,37 @@ def edit_playlist(id):
 
     if form.validate_on_submit():
         try:
-            print("---=== edit_playlist ===---")
             playlist.name = form.name.data
             db.session.commit()
 
             flash(f"{form.name.data} edited")
 
-            print(f"In Playlist:{video_IDs}")
-
-            print(f"Videos in Playlist:{video_IDs}")
-            print(f"Videos in Playlist:{playlist.videos}")
             for key, value in form.data.items():
                 if not key.isdigit():
-                    print(f"key:{key}")
                     continue
                 if not value:
-                    print(f"value:{value}")
                     continue
 
                 video_id = int(key)
-                print(f"checked:{key}")
                 if video_id in video_IDs:
                     video_IDs.remove(video_id)
-                    print(f"already:{video_id}")
                     continue
 
-                print(f"add:{key}")
                 join = Playlists_Videos(
                     playlist_id=playlist.id,
                     video_id=video_id)
-                print(join)
                 db.session.add(join)
                 db.session.commit()
-                video_IDs.remove(video_id)
-
-            print(f"Delete from Playlist:{video_IDs}")
 
             for video_id in video_IDs.copy():
                 p_v = Playlists_Videos.query.filter(Playlists_Videos.playlist_id == playlist.id, Playlists_Videos.video_id == video_id).first()
                 if p_v is not None:
-                    print(p_v)
-                    print(f"Videos in Playlist:{playlist.videos}")
                     db.session.delete(p_v)
                     db.session.commit()
-                    print("After Delete")
                 video_IDs.remove(video_id)
-
-            print(f"Set final:{video_IDs}")
 
             db.session.commit()
 
-            print("***** redirect *****")
             return redirect("/")
         except IntegrityError as e:
             db.session.rollback()
@@ -383,15 +361,10 @@ def edit_playlist(id):
                 flash(f"args:[{e.orig.args}]")
             else:
                 flash("ERROR")
-            print("***** IntegrityError *****")
-            print(e)
             return render_template("edit_playlist.html", VIDEOS=videos, FORM=form, PLAYLIST_ID=id, FROM_ROUTE=f"/playlist/{id}/edit")
         except Exception as e:
             db.session.rollback()
             flash("ERROR")
-            print("***** Exception *****")
-            print(repr(e))
-            print("********************")
             return render_template("edit_playlist.html", VIDEOS=videos, FORM=form, PLAYLIST_ID=id, FROM_ROUTE=f"/playlist/{id}/edit")
     else:
         return render_template("edit_playlist.html", VIDEOS=videos, FORM=form, PLAYLIST_ID=id, FROM_ROUTE=f"/playlists/{id}/edit")
