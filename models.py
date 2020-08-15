@@ -96,4 +96,7 @@ class Playlists_Videos(db.Model):
     playlist_id = db.Column(db.Integer, db.ForeignKey("playlists.id"))
     video_id = db.Column(db.Integer, db.ForeignKey("videos.id"))
 
+    playlists = db.relationship(Playlist, backref=db.backref("playlists_videos", cascade="all, delete-orphan"))
+    videos = db.relationship(Video, backref=db.backref("playlists_videos", cascade="all, delete-orphan"))
+
 # ==================================================

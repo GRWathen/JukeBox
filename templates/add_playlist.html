@@ -19,6 +19,9 @@
                     {% if COUNT.update({"COUNT":1}) %}{% endif %}
                     {{ FIELD.label }}
                     {{ FIELD }}
+                    {%- for ERROR in FIELD.errors -%}
+                    {{ ERROR }}
+                    {%- endfor -%}
             </div>
                 {%- endif -%}
                 {%- for ERROR in FIELD.errors -%}

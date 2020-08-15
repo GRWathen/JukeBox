@@ -21,12 +21,12 @@
                 <li data-ID="{{ FIELD.id|int }}">
                     {{ FIELD }}
                     {{ FIELD.label }}
+                    {%- for ERROR in FIELD.errors -%}
+                    {{ ERROR }}
+                    {%- endfor -%}
                 </li>
             {% endif %}
         {%- endif -%}
-        {%- for ERROR in FIELD.errors -%}
-        {{ ERROR }}
-        {%- endfor -%}
     {%- endfor -%}
     {% if ARTIST["ARTIST"] != None %}
             </ul>

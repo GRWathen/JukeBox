@@ -84,6 +84,7 @@ def register():
         try:
             db.session.commit()
         except IntegrityError as e:
+            db.session.rollback()
             if len(e.orig.args) > 0:
                 lst = e.orig.args[0].split("=")
                 if len(lst) == 2 and lst[1].startswith("(") and lst[1].endswith(") already exists.\n"):
@@ -95,6 +96,10 @@ def register():
             #...\nDETAIL:  Key (username)=(one) already exists.\n
             #...\nDETAIL:  Key (email)=(a@b.c) already exists.\n
             #...\nDETAIL:  Key (public_access_code)=(pac) already exists.\n
+            return render_template("register.html", FORM_LOG=form_log, FORM_REGISTER=form_register, FROM_ROUTE="/register")
+        except Exception:
+            db.session.rollback()
+            flash("ERROR")
             return render_template("register.html", FORM_LOG=form_log, FORM_REGISTER=form_register, FROM_ROUTE="/register")
 
         session["username"] = user.username
@@ -193,27 +198,29 @@ def edit_user(id):
         if user is None:
             flash("None Exception")
             return redirect("/")
-    except:
+    except Exception:
         flash("Edit User Error")
         return redirect("/")
 
     form = EditUserForm(obj=user)
     if form.validate_on_submit():
         try:
-            print(f"U:{user}")
-            print(f"U:{user.public_access_code}")
             form.populate_obj(user)
-            print(f"F:{form.public_access_code.data}")
             db.session.add(user)
             db.session.commit()
 
             flash(f"{user.username} edited")
             return redirect("/")
         except IntegrityError as e:
+            db.session.rollback()
             if len(e.orig.args) > 0:
                 flash(f"args:[{e.orig.args}]")
             else:
                 flash("ERROR")
+            return render_template("edit_user.html", FORM=form, USER_ID=id, USERNAME=user.username, FROM_ROUTE=f"/users/{id}/edit")
+        except Exception:
+            db.session.rollback()
+            flash("ERROR")
             return render_template("edit_user.html", FORM=form, USER_ID=id, USERNAME=user.username, FROM_ROUTE=f"/users/{id}/edit")
     else:
         return render_template("edit_user.html", FORM=form, USER_ID=id, USERNAME=user.username, FROM_ROUTE=f"/users/{id}/edit")
@@ -264,10 +271,15 @@ def add_playlist():
 
             return redirect("/")
         except IntegrityError as e:
+            db.session.rollback()
             if len(e.orig.args) > 0:
                 flash(f"args:[{e.orig.args}]")
             else:
                 flash("ERROR")
+            return render_template("add_playlist.html", VIDEOS=videos, FORM=form, FROM_ROUTE="/playlists/new")
+        except Exception:
+            db.session.rollback()
+            flash("ERROR")
             return render_template("add_playlist.html", VIDEOS=videos, FORM=form, FROM_ROUTE="/playlists/new")
     else:
         return render_template("add_playlist.html", VIDEOS=videos, FORM=form, FROM_ROUTE="/playlists/new")
@@ -286,27 +298,103 @@ def edit_playlist(id):
             raise Exception("None Exception")
         if playlist.user_id != session.get("user_id"):
             raise Exception("Invalid User")
-    except:
+    except Exception:
         flash("Edit Playlist Error")
         return redirect("/")
 
-    form = EditPlaylistForm(obj=playlist)
+    video_IDs = set(())
+    for video in playlist.videos:
+        video_IDs.add(video.id)
+    print(f"Videos in Playlist:{video_IDs}")
+    print(f"Videos in Playlist:{playlist.videos}")
+
+    videos = Video.query.filter(Video.user_id == session["user_id"]).order_by(Video.artist.asc(), Video.title.asc()).all()
+
+    CopyOfEditPlaylistForm = type('CopyOfEditPlaylistForm', EditPlaylistForm.__bases__, dict(EditPlaylistForm.__dict__))
+
+    artist = None
+    for video in videos:
+        if video.artist != artist:
+            artist = video.artist
+            setattr(CopyOfEditPlaylistForm, "[" + artist + "]", BooleanField(artist))
+        if video.id in video_IDs:
+            setattr(CopyOfEditPlaylistForm, str(video.id), BooleanField(video.title, default="checked"))
+        else:
+            setattr(CopyOfEditPlaylistForm, str(video.id), BooleanField(video.title))
+    form = CopyOfEditPlaylistForm(obj=playlist)
+
     if form.validate_on_submit():
         try:
-            form.populate_obj(playlist)
-            db.session.add(playlist)
+            print("---=== edit_playlist ===---")
+            playlist.name = form.name.data
             db.session.commit()
 
             flash(f"{form.name.data} edited")
+
+            print(f"In Playlist:{video_IDs}")
+
+            print(f"Videos in Playlist:{video_IDs}")
+            print(f"Videos in Playlist:{playlist.videos}")
+            for key, value in form.data.items():
+                if not key.isdigit():
+                    print(f"key:{key}")
+                    continue
+                if not value:
+                    print(f"value:{value}")
+                    continue
+
+                video_id = int(key)
+                print(f"checked:{key}")
+                if video_id in video_IDs:
+                    video_IDs.remove(video_id)
+                    print(f"already:{video_id}")
+                    continue
+
+                print(f"add:{key}")
+                join = Playlists_Videos(
+                    playlist_id=playlist.id,
+                    video_id=video_id)
+                print(join)
+                db.session.add(join)
+                db.session.commit()
+                video_IDs.remove(video_id)
+
+            print(f"Delete from Playlist:{video_IDs}")
+
+            for video_id in video_IDs.copy():
+                p_v = Playlists_Videos.query.filter(Playlists_Videos.playlist_id == playlist.id, Playlists_Videos.video_id == video_id).first()
+                if p_v is not None:
+                    print(p_v)
+                    print(f"Videos in Playlist:{playlist.videos}")
+                    db.session.delete(p_v)
+                    db.session.commit()
+                    print("After Delete")
+                video_IDs.remove(video_id)
+
+            print(f"Set final:{video_IDs}")
+
+            db.session.commit()
+
+            print("***** redirect *****")
             return redirect("/")
         except IntegrityError as e:
+            db.session.rollback()
             if len(e.orig.args) > 0:
                 flash(f"args:[{e.orig.args}]")
             else:
                 flash("ERROR")
-            return render_template("edit_playlist.html", FORM=form, PLAYLIST_ID=id, FROM_ROUTE=f"/playlist/{id}/edit")
+            print("***** IntegrityError *****")
+            print(e)
+            return render_template("edit_playlist.html", VIDEOS=videos, FORM=form, PLAYLIST_ID=id, FROM_ROUTE=f"/playlist/{id}/edit")
+        except Exception as e:
+            db.session.rollback()
+            flash("ERROR")
+            print("***** Exception *****")
+            print(repr(e))
+            print("********************")
+            return render_template("edit_playlist.html", VIDEOS=videos, FORM=form, PLAYLIST_ID=id, FROM_ROUTE=f"/playlist/{id}/edit")
     else:
-        return render_template("edit_playlist.html", FORM=form, PLAYLIST_ID=id, FROM_ROUTE=f"/playlists/{id}/edit")
+        return render_template("edit_playlist.html", VIDEOS=videos, FORM=form, PLAYLIST_ID=id, FROM_ROUTE=f"/playlists/{id}/edit")
 
 @app.route("/playlists/<int:id>/delete", methods=["POST"])
 def delete_playlist(id):
@@ -326,8 +414,12 @@ def delete_playlist(id):
 
         return "OK"
     except IntegrityError as e:
+        db.session.rollback()
+        flash("ERROR")
         return "IntegrityError"
     except Exception as e:
+        db.session.rollback()
+        flash("ERROR")
         return "Exception"
 
 # ==================================================
@@ -360,10 +452,15 @@ def add_video():
             flash(f"{form.title.data} added")
             return redirect("/")
         except IntegrityError as e:
+            db.session.rollback()
             if len(e.orig.args) > 0:
                 flash(f"args:[{e.orig.args}]")
             else:
                 flash("ERROR")
+            return render_template("add_video.html", FORM=form, FROM_ROUTE="/videos/new")
+        except Exception:
+            db.session.rollback()
+            flash("ERROR")
             return render_template("add_video.html", FORM=form, FROM_ROUTE="/videos/new")
     else:
         return render_template("add_video.html", FORM=form, FROM_ROUTE="/videos/new")
@@ -390,7 +487,7 @@ def edit_video(id):
             raise Exception("None Exception")
         if video.user_id != session.get("user_id"):
             raise Exception("Invalid User")
-    except:
+    except Exception:
         flash("Edit Video Error")
         return redirect("/")
 
@@ -404,10 +501,15 @@ def edit_video(id):
             flash(f"{form.title.data} edited")
             return redirect("/")
         except IntegrityError as e:
+            db.session.rollback()
             if len(e.orig.args) > 0:
                 flash(f"args:[{e.orig.args}]")
             else:
                 flash("ERROR")
+            return render_template("edit_video.html", FORM=form, VIDEO_ID=id, FROM_ROUTE=f"/videos/{id}/edit")
+        except Exception:
+            db.session.rollback()
+            flash("ERROR")
             return render_template("edit_video.html", FORM=form, VIDEO_ID=id, FROM_ROUTE=f"/videos/{id}/edit")
     else:
         return render_template("edit_video.html", FORM=form, VIDEO_ID=id, FROM_ROUTE=f"/videos/{id}/edit")
@@ -430,8 +532,12 @@ def delete_video(id):
 
         return "OK"
     except IntegrityError as e:
+        db.session.rollback()
+        flash("IntegrityError")
         return "IntegrityError"
     except Exception as e:
+        db.session.rollback()
+        flash("Exception")
         return "Exception"
 
 # ==================================================

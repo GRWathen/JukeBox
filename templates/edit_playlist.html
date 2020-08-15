@@ -11,16 +11,21 @@
         <h1>Edit Playlist</h1>
         <form>
             {{ FORM.hidden_tag() }}
+            {%- set COUNT = {"COUNT":0} -%}
             {%- for FIELD in FORM
                     if FIELD.widget.input_type != "hidden" -%}
+                {%- if COUNT["COUNT"] == 0 -%}
             <div>
-                {{ FIELD.label }}
-                {{ FIELD }}
-                {%- for ERROR in FIELD.errors -%}
-                {{ ERROR }}
-                {%- endfor -%}
+                    {% if COUNT.update({"COUNT":1}) %}{% endif %}
+                    {{ FIELD.label }}
+                    {{ FIELD }}
+                    {%- for ERROR in FIELD.errors -%}
+                    {{ ERROR }}
+                    {%- endfor -%}
             </div>
+                {%- endif -%}
             {%- endfor -%}
+            {%- include "include/playlist.html" -%}
             <button type="submit" formaction="/playlists/{{ PLAYLIST_ID }}/edit" formmethod="POST">Save</button>
             <button type="submit" formaction="/" formmethod="POST" formnovalidate=True>Cancel</button>
             {%- with MESSAGES = get_flashed_messages() -%}
