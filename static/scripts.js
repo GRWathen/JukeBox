@@ -27,19 +27,31 @@ function checkboxArtist(elem) {
     }
 }
 
-function playPlaylist(video_id) {
+function playPlaylist() {
+    let video_id = document.getElementById("video_id")
     let videos = document.querySelectorAll(".video");
     let nodes = [...videos];
 
     for (let i = 0; i < nodes.length; i++) {
-        if (nodes[i].attributes["video_id"].nodeValue === video_id) {
+        if (nodes[i].attributes["video_id"].nodeValue === video_id.innerText) {
             nodes.splice(i, 1);
             break;
         }
     }
 
     const ran = Math.floor(Math.random() * nodes.length);
-    return nodes[ran].attributes["video_id"].nodeValue;
+    video_id.innerText = nodes[ran].attributes["video_id"].nodeValue;
+
+    document.getElementById("video").remove();
+
+    let att = document.createAttribute("id");
+    att.value = "video";
+
+    let div = document.createElement("div");
+    div.setAttributeNode(att);
+
+    video_id.parentNode.insertBefore(div, video_id.nextSibling);
+    onYouTubeIframeAPIReady();
 }
 
 function playVideo(videoID) {

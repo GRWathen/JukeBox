@@ -40,18 +40,6 @@ function onPlayerReady(event) {
 
 function onPlayerStateChange(event) {
     if (event.data === 0) {
-        let video_id = document.getElementById("video_id");
-        video_id.innerText = playPlaylist(video_id.innerText);
-
-        document.getElementById("video").remove();
-
-        let att = document.createAttribute("id");
-        att.value = "video";
-
-        let div = document.createElement("div");
-        div.setAttributeNode(att);
-
-        video_id.parentNode.insertBefore(div, video_id.nextSibling);
-        onYouTubeIframeAPIReady();
+        playPlaylist();
     }
 }

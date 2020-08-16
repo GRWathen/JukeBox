@@ -26,14 +26,12 @@ ul {
     cursor: default;
 }
 
-.edit {
-    color: gold;
+.center {
+    text-align: center;
 }
 
-.editButton {
-    border: none;
-    padding: 0px;
-    background: none;
+.edit {
+    color: gold;
 }
 
 .editForm {
@@ -44,13 +42,29 @@ ul {
     display: none;
 }
 
+.iconButton {
+    border: none;
+    padding: 0px;
+    background: none;
+}
+
 .itemArtist {
     margin-bottom: 10px;
 }
 
+.libraryName {
+    text-align: center;
+    font-size: 150%;
+}
+
+.nextButton {
+    font-size: 400%;
+    cursor: pointer;
+}
+
 .playlist {
     text-decoration: underline;
-    cursor: grab;
+    cursor: pointer;
 }
 
 .trash {
@@ -59,12 +73,12 @@ ul {
 
 .username {
     font-weight: bold;
-    cursor: grab;
+    cursor: pointer;
 }
 
 .video {
     text-decoration: underline;
-    cursor: grab;
+    cursor: pointer;
 }
 
 #library {

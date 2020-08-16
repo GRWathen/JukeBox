@@ -260,7 +260,7 @@ def watch_playlist(id):
     videos = playlist.videos
     video = videos[random.randrange(0, len(videos))]
 
-    return render_template("/extends/playlist.html", USER_ID=session.get("user_id"), PLAYLISTS=playlists, VIDEO=video, VIDEOS=videos, FORM_LOG=form_log, FORM_ADD_PLAYLIST_BUTTON=form_add_playlist_button, FORM_ADD_VIDEO_BUTTON=form_add_video_button, FORM_EDIT_PLAYLIST_BUTTON=form_edit_playlist_button, FORM_EDIT_VIDEO_BUTTON=form_edit_video_button, FROM_ROUTE="/playlists/{id}")
+    return render_template("/extends/playlist.html", USER_ID=session.get("user_id"), LIBRARY_NAME=playlist.name, PLAYLISTS=playlists, VIDEO=video, VIDEOS=videos, FORM_LOG=form_log, FORM_ADD_PLAYLIST_BUTTON=form_add_playlist_button, FORM_ADD_VIDEO_BUTTON=form_add_video_button, FORM_EDIT_PLAYLIST_BUTTON=form_edit_playlist_button, FORM_EDIT_VIDEO_BUTTON=form_edit_video_button, FROM_ROUTE="/playlists/{id}")
 
 @app.route("/playlists/new", methods=["GET", "POST"])
 def add_playlist():

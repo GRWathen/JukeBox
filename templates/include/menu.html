@@ -18,7 +18,7 @@
                 <li data-ID="{{ PLAYLIST.id }}">
                     <form class="editForm">
                         {{ FORM_EDIT_PLAYLIST_BUTTON.hidden_tag() }}
-                        <button class="editButton" type="submit" formaction="/playlists/{{ PLAYLIST.id }}/edit" formmethod="GET"><i class="far fa-edit edit"></i></button>
+                        <button class="iconButton" type="submit" formaction="/playlists/{{ PLAYLIST.id }}/edit" formmethod="GET"><i class="far fa-edit edit"></i></button>
                     </form>
                     <a class="playlist" href="/playlists/{{ PLAYLIST.id }}">{{ PLAYLIST.name }}</a>
                     <span onclick="trashPlaylist(this)"><i class="far fa-trash-alt trash"></i></span>
