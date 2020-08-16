@@ -4,6 +4,7 @@ from sqlalchemy.exc import IntegrityError
 from models import db, connect_db, User, Video, Playlist, Playlists_Videos
 from forms import AddPlaylistForm, AddPlaylistButtonForm, AddVideoForm, AddVideoButtonForm, EditUserForm, EditPlaylistForm, EditPlaylistButtonForm, EditVideoForm, EditVideoButtonForm, LogInOutForm, RegisterForm
 from wtforms import BooleanField
+import random
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "Don't look at me."
@@ -228,6 +229,38 @@ def edit_user(id):
 # ==================================================
 
 # -------------------- PLAYLISTS --------------------
+
+@app.route("/playlists/<int:id>")
+def watch_playlist(id):
+    """Watch playlist"""
+    if not session.get("username"):
+        flash("You must be logged in")
+        return redirect("/")
+
+    playlists = None
+    try:
+        playlist = Playlist.query.get(id)
+        if playlist is None:
+            raise Exception("None Exception")
+        if playlist.user_id != session.get("user_id"):
+            raise Exception("Invalid User")
+    except Exception:
+        flash("Watch Playlist Error")
+        return redirect("/")
+
+    form_log = LogInOutForm()
+    form_add_playlist_button = AddPlaylistButtonForm()
+    form_add_video_button = AddVideoButtonForm()
+    form_edit_playlist_button = EditPlaylistButtonForm()
+    form_edit_video_button = EditVideoButtonForm()
+
+    playlists = Playlist.query.filter(Playlist.user_id == session["user_id"]).order_by(Playlist.name.asc()).all()
+
+    playlist = Playlist.query.get(id)
+    videos = playlist.videos
+    video = videos[random.randrange(0, len(videos))]
+
+    return render_template("/extends/playlist.html", USER_ID=session.get("user_id"), PLAYLISTS=playlists, VIDEO=video, VIDEOS=videos, FORM_LOG=form_log, FORM_ADD_PLAYLIST_BUTTON=form_add_playlist_button, FORM_ADD_VIDEO_BUTTON=form_add_video_button, FORM_EDIT_PLAYLIST_BUTTON=form_edit_playlist_button, FORM_EDIT_VIDEO_BUTTON=form_edit_video_button, FROM_ROUTE="/playlists/{id}")
 
 @app.route("/playlists/new", methods=["GET", "POST"])
 def add_playlist():

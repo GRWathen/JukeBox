@@ -27,12 +27,24 @@ function checkboxArtist(elem) {
     }
 }
 
-function playPlaylist() {
+function playPlaylist(video_id) {
+    let videos = document.querySelectorAll(".video");
+    let nodes = [...videos];
+
+    for (let i = 0; i < nodes.length; i++) {
+        if (nodes[i].attributes["video_id"].nodeValue === video_id) {
+            nodes.splice(i, 1);
+            break;
+        }
+    }
+
+    const ran = Math.floor(Math.random() * nodes.length);
+    return nodes[ran].attributes["video_id"].nodeValue;
 }
 
 function playVideo(videoID) {
     const video = document.getElementById("video");
-    video.setAttribute("src", `https://www.youtube-nocookie.com/embed/${videoID}?autoplay=1`);
+    video.setAttribute("src", `https://www.youtube.com/embed/${videoID}?autoplay=1`);
 }
 
 async function trashPlaylist(elem) {

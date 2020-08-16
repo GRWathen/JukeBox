@@ -8,10 +8,10 @@ body {
 
 iframe {
     width: 100%;
-    height: -moz-calc((98vw - 200px - 200px - 5px) * 0.60);
-    height: -webkit-calc((98vw - 200px - 200px - 5px) * 0.60);
-    height: -o-calc((98vw - 200px - 200px - 5px) * 0.60);
-    height: calc((98vw - 200px - 200px - 5px) * 0.60);
+    height: -moz-calc((98vw - 200px - 200px - 10px) * 0.60);
+    height: -webkit-calc((98vw - 200px - 200px - 10px) * 0.60);
+    height: -o-calc((98vw - 200px - 200px - 10px) * 0.60);
+    height: calc((98vw - 200px - 200px - 10px) * 0.60);
     padding: 5px;
 }
 
@@ -81,10 +81,18 @@ ul {
 
 #sectionContent {
     display: inline-block;
-    width: -moz-calc(98vw - 200px - 200px - 5px);
-    width: -webkit-calc(98vw - 200px - 200px - 5px);
-    width: -o-calc(98vw - 200px - 200px - 5px);
-    width: calc(98vw - 200px - 200px - 5px);
+    width: -moz-calc(98vw - 200px - 200px - 10px);
+    width: -webkit-calc(98vw - 200px - 200px - 10px);
+    width: -o-calc(98vw - 200px - 200px - 10px);
+    width: calc(98vw - 200px - 200px - 10px);
+}
+
+#sectionYTPlayer {
+    display: inline-block;
+    width: -moz-calc(98vw - 200px - 200px - 10px);
+    width: -webkit-calc(98vw - 200px - 200px - 10px);
+    width: -o-calc(98vw - 200px - 200px - 10px);
+    width: calc(98vw - 200px - 200px - 10px);
 }
 
 #sectionLibrary {
@@ -97,25 +105,29 @@ ul {
     display: inline-block;
 }
 
-@media screen and (max-width: 1000px) {
+@media screen and (max-width: 900px) {
     iframe {
         width: 100%;
-        height: -moz-calc((98vw - 200px - 5px) * 0.60);
-        height: -webkit-calc((98vw - 200px - 5px) * 0.60);
-        height: -o-calc((98vw - 200px - 5px) * 0.60);
-        height: calc((98vw - 200px - 5px) * 0.60);
-    }
-
-    #library {
-        width: 150px;
+        height: -moz-calc((98vw - 200px - 10px) * 0.60);
+        height: -webkit-calc((98vw - 200px - 10px) * 0.60);
+        height: -o-calc((98vw - 200px - 10px) * 0.60);
+        height: calc((98vw - 200px - 10px) * 0.60);
     }
 
     #sectionContent {
         display: inline-block;
-        width: -moz-calc(98vw - 200px - 5px);
-        width: -webkit-calc(98vw - 200px - 5px);
-        width: -o-calc(98vw - 200px - 5px);
-        width: calc(98vw - 200px - 5px);
+        width: -moz-calc(98vw - 200px - 10px);
+        width: -webkit-calc(98vw - 200px - 10px);
+        width: -o-calc(98vw - 200px - 10px);
+        width: calc(98vw - 200px - 10px);
+    }
+
+    #sectionYTPlayer {
+        display: inline-block;
+        width: -moz-calc(98vw - 200px - 10px);
+        width: -webkit-calc(98vw - 200px - 10px);
+        width: -o-calc(98vw - 200px - 10px);
+        width: calc(98vw - 200px - 10px);
     }
 
     #sectionMenu {
@@ -124,13 +136,13 @@ ul {
     }
 }
 
-@media screen and (max-width: 800px) {
+@media screen and (max-width: 700px) {
     iframe {
         width: 100%;
-        height: -moz-calc((98vw - 5px) * 0.60);
-        height: -webkit-calc((98vw - 5px) * 0.60);
-        height: -o-calc((98vw - 5px) * 0.60);
-        height: calc((98vw - 5px) * 0.60);
+        height: -moz-calc((98vw - 10px) * 0.60);
+        height: -webkit-calc((98vw - 10px) * 0.60);
+        height: -o-calc((98vw - 10px) * 0.60);
+        height: calc((98vw - 10px) * 0.60);
     }
 
     #library {
@@ -142,10 +154,18 @@ ul {
 
     #sectionContent {
         display: inline-block;
-        width: -moz-calc(98vw - 5px);
-        width: -webkit-calc(98vw - 5px);
-        width: -o-calc(98vw - 5px);
-        width: calc(98vw - 5px);
+        width: -moz-calc(98vw - 10px);
+        width: -webkit-calc(98vw - 10px);
+        width: -o-calc(98vw - 10px);
+        width: calc(98vw - 10px);
+    }
+
+    #sectionYTPlayer {
+        display: inline-block;
+        width: -moz-calc(98vw - 10px);
+        width: -webkit-calc(98vw - 10px);
+        width: -o-calc(98vw - 10px);
+        width: calc(98vw - 10px);
     }
 
     #sectionLibrary {

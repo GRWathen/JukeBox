@@ -1,5 +1,7 @@
 <section id="sectionMenu">
     <ul id="menu">
+        <li><a href="/">Home</a></li>
+        <li><hr></li>
         <li>Settings</li>
         <li>Search</li>
         <li>
@@ -18,7 +20,7 @@
                         {{ FORM_EDIT_PLAYLIST_BUTTON.hidden_tag() }}
                         <button class="editButton" type="submit" formaction="/playlists/{{ PLAYLIST.id }}/edit" formmethod="GET"><i class="far fa-edit edit"></i></button>
                     </form>
-                    <span class="playlist" onclick="playPlaylist()">{{ PLAYLIST.name }}</span>
+                    <a class="playlist" href="/playlists/{{ PLAYLIST.id }}">{{ PLAYLIST.name }}</a>
                     <span onclick="trashPlaylist(this)"><i class="far fa-trash-alt trash"></i></span>
                 </li>
             {% endfor %}
