@@ -1,6 +1,6 @@
-form, button, input,
-
-html, body, div, h1, h2, h3, h4, h5, h6, p, span {
+html, body, div, p, span,
+h1, h2, h3, h4, h5, h6,
+ul, li, form, button, input {
 	margin: 0;
 	padding: 0;
 }

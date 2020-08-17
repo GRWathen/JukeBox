@@ -2,15 +2,18 @@
     {{ FORM_LOG.hidden_tag() }}
     <input id="from_route" name="from_route" type="hidden" value="{{ FROM_ROUTE }}">
     <fieldset>
-        <legend>&nbsp;JukeBox&nbsp;</legend>
         {%- if "username" in session -%}
-            <a href="/users/{{ USER_ID }}/edit"><span class="username">{{ session["username"] }}</span></a>
-            <button type="submit" formaction="/logout" formmethod="POST">Log out</button>
+        <legend>&nbsp;Log out&nbsp;</legend>
+            <a class="username" href="/users/{{ USER_ID }}/edit">{{ session["username"] }}</a>
+            <button class="btn buttonRight" type="submit" formaction="/logout" formmethod="POST">Log out</button>
         {%- else -%}
-            <label>Username: <input id="log_username" name="log_username" type="text" placeholder="Enter your username"></label>
-            <label>Password: <input id="log_password" name="log_password" type="password" placeholder="Enter your password"></label>
-            <button type="submit" formaction="/login" formmethod="POST">Log in</button>
-            <button type="submit" formaction="/register" formmethod="POST">Register</button>
+        <legend>&nbsp;Log in / Register&nbsp;</legend>
+            <label class="username">Username: <input id="log_username" name="log_username" type="text" placeholder="Enter your username"></label>
+            &nbsp; &nbsp;
+            <label class="username">Password: <input id="log_password" name="log_password" type="password" placeholder="Enter your password"></label>
+            &nbsp; &nbsp;
+            <button class="btn" type="submit" formaction="/login" formmethod="POST">Log in</button>
+            <button class="btn buttonRight" type="submit" formaction="/register" formmethod="POST">Register</button>
         {%- endif -%}
     </fieldset>
     {%- with MESSAGES = get_flashed_messages() -%}

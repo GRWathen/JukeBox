@@ -14,7 +14,7 @@ app.config["SQLALCHEMY_ECHO"] = True
 #app.config["TESTING"] = True
 #app.config["DEBUG_TB_HOSTS"] = ["dont-show-debug-toolbar"]
 app.config["DEBUG_TB_INTERCEPT_REDIRECTS"] = False
-debug = DebugToolbarExtension(app)
+#debug = DebugToolbarExtension(app)
 
 connect_db(app)
 
@@ -39,7 +39,7 @@ def homepage(path):
         playlists = Playlist.query.filter(Playlist.user_id == session["user_id"]).order_by(Playlist.name.asc()).all()
         videos = Video.query.filter(Video.user_id == session["user_id"]).order_by(Video.artist.asc(), Video.title.asc()).all()
 
-    return render_template("/extends/home.html", USER_ID=session.get("user_id"), PLAYLISTS=playlists, VIDEOS=videos, FORM_LOG=form_log, FORM_ADD_PLAYLIST_BUTTON=form_add_playlist_button, FORM_ADD_VIDEO_BUTTON=form_add_video_button, FORM_EDIT_PLAYLIST_BUTTON=form_edit_playlist_button, FORM_EDIT_VIDEO_BUTTON=form_edit_video_button, FROM_ROUTE="/")
+    return render_template("/extends/home.html", USER_ID=session.get("user_id"), LIBRARY_NAME=None, PLAYLISTS=playlists, VIDEOS=videos, FORM_LOG=form_log, FORM_ADD_PLAYLIST_BUTTON=form_add_playlist_button, FORM_ADD_VIDEO_BUTTON=form_add_video_button, FORM_EDIT_PLAYLIST_BUTTON=form_edit_playlist_button, FORM_EDIT_VIDEO_BUTTON=form_edit_video_button, FROM_ROUTE="/")
 
 # ---------- REGISTER / LOGIN / LOGOUT ----------
 
@@ -154,30 +154,6 @@ def logout():
         session.pop("user_id")
         flash("Logged Out")
     return redirect("/")
-
-# ==================================================
-
-# -------------------- TEMPORARY --------------------
-
-@app.route("/private")
-def private():
-    """Private page."""
-    if not session.get("username"):
-        flash("You must be logged in")
-        return redirect("/")
-    
-    form_log = LogInOutForm()
-    form_add_video_button = AddVideoButtonForm()
-    form_edit_video_button = EditVideoButtonForm()
-    return render_template("/extends/private.html", FORM_LOG=form_log, FORM_ADD_VIDEO_BUTTON=form_add_video_button, FORM_EDIT_VIDEO_BUTTON=form_edit_video_button, FROM_ROUTE="/private")
-
-@app.route("/secret")
-def secret():
-    """Example page."""
-    form_log = LogInOutForm()
-    form_add_video_button = AddVideoButtonForm()
-    form_edit_video_button = EditVideoButtonForm()
-    return render_template("/extends/secret.html", FORM_LOG=form_log, FORM_ADD_VIDEO_BUTTON=form_add_video_button, FORM_EDIT_VIDEO_BUTTON=form_edit_video_button, FROM_ROUTE="/secret")
 
 # ==================================================
 
@@ -432,11 +408,6 @@ def delete_playlist(id):
 
 # -------------------- VIDEOS --------------------
 
-#@app.route("/videos")
-#def videos_list():
-#    """List of videos"""
-#    return render_template("videos.html", TITLE="Videos", VIDEO=Video.query.order_by(Video.ast_name.asc(),Video.first_name.asc()).all())
-
 @app.route("/videos/new", methods=["GET", "POST"])
 def add_video():
     """Add video"""
@@ -470,14 +441,6 @@ def add_video():
             return render_template("add_video.html", FORM=form, FROM_ROUTE="/videos/new")
     else:
         return render_template("add_video.html", FORM=form, FROM_ROUTE="/videos/new")
-
-#@app.route("/videos/<int:video_id>")
-#def watch_video(video_id):
-#    """Watch video"""
-#    video = Video.query.get(id)
-#    posts = Post.query.filter(Post.video_id==id).all()
-#    return render_template("video.html", TITLE=video.full_name, ##VIDEO=video, POSTS=posts)
-#    return
 
 @app.route("/videos/<int:id>/edit", methods=["GET", "POST"])
 def edit_video(id):

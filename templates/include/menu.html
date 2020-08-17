@@ -1,5 +1,5 @@
 <section id="sectionMenu">
-    <ul id="menu">
+    <ul id="menu" class="background">
         <li><a href="/">Home</a></li>
         <li><hr></li>
         <li>Settings</li>
@@ -7,11 +7,11 @@
         <li>
             <form>
                 {{ FORM_ADD_VIDEO_BUTTON.hidden_tag() }}
-                <button type="submit" formaction="/videos/new" formmethod="GET">Add Video</button>
+                <button class="btn" type="submit" formaction="/videos/new" formmethod="GET">Add Video</button>
             </form>
         </li>
         <li><hr></li>
-        <li id="playlists">Playlists
+        <li id="playlists"><span class="sans-serif">PLAYLISTS</span>
         {%- if PLAYLISTS != None -%}
             <ul>
             {% for PLAYLIST in PLAYLISTS %}
@@ -30,8 +30,7 @@
         <li><hr></li>
             <form>
                 {{ FORM_ADD_PLAYLIST_BUTTON.hidden_tag() }}
-                <button type="submit" formaction="/playlists/new" formmethod="GET">Add Playlist</button>
+                <button class="btn" type="submit" formaction="/playlists/new" formmethod="GET">Add Playlist</button>
             </form>
-        <li><hr></li>
     </ul>
 </section>

@@ -1,17 +1,23 @@
 body {
-    background-color: slategray;
-    background-image: url("background-jukebox.png");
+    background-color: #202020;
+    background-image: url("images/background-jukebox.png");
     background-position: center top;
     background-repeat: no-repeat;
     background-size: cover;
 }
 
+fieldset legend {
+    font-size: 110%;
+    font-weight: bold;
+    color: whitesmoke;
+}
+
 iframe {
     width: 100%;
-    height: -moz-calc((98vw - 200px - 200px - 10px) * 0.60);
-    height: -webkit-calc((98vw - 200px - 200px - 10px) * 0.60);
-    height: -o-calc((98vw - 200px - 200px - 10px) * 0.60);
-    height: calc((98vw - 200px - 200px - 10px) * 0.60);
+    height: -moz-calc((98vw - 200px - 200px - 28px) * 0.60);
+    height: -webkit-calc((98vw - 200px - 200px - 28px) * 0.60);
+    height: -o-calc((98vw - 200px - 200px - 28px) * 0.60);
+    height: calc((98vw - 200px - 200px - 28px) * 0.60);
     padding: 5px;
 }
 
@@ -21,9 +27,28 @@ ul {
 }
 
 .artist {
+    font-family: sans-serif;
     text-decoration: underline;
     font-weight: bold;
     cursor: default;
+}
+
+.background {
+    margin: 5px 0px;
+    border: 2px solid black;
+    border-radius: 10px;
+    background-color: silver;
+}
+
+.backgroundNext {
+    margin: 5px 0px;
+    border: 2px solid white;
+    border-radius: 10px;
+    background-color: white;
+}
+
+.buttonRight {
+     float: right;
 }
 
 .center {
@@ -52,9 +77,11 @@ ul {
     margin-bottom: 10px;
 }
 
-.libraryName {
-    text-align: center;
-    font-size: 150%;
+.jukeText {
+    font-family: "Arial Black", Gadget, sans-serif;
+    font-style: normal;
+    font-weight: bold;
+    color: orangered;
 }
 
 .nextButton {
@@ -67,13 +94,31 @@ ul {
     cursor: pointer;
 }
 
+.sans-serif {
+    font-family: sans-serif;
+}
+
+.siteHeader {
+    padding: 10px 0px;
+    text-align: center;
+    font-family: Georgia, "Times New Roman", Times, serif;
+    font-style: italic;
+    font-size: 300%;
+    color: whitesmoke;
+    background-color: #202020;
+}
+
 .trash {
     color: red;
 }
 
 .username {
+    display: inline-block;
+    font-size: 110%;
     font-weight: bold;
     cursor: pointer;
+    color: whitesmoke;
+    text-decoration-color: white;
 }
 
 .video {
@@ -82,81 +127,106 @@ ul {
 }
 
 #library {
+    margin-left: 5px;
+    padding-top: 10px;
+    padding-bottom: 10px;
     width: 200px;
 }
 
+#libraryName {
+    margin-left: 5px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    text-align: center;
+    font-size: 150%;
+}
+
 #logInOut {
-    margin-bottom: 5px;
+    padding: 5px 0px;
+    background-color: #202020;
 }
 
 #menu {
+    margin-left: 5px;
+    padding-top: 10px;
+    padding-bottom: 10px;
     width: 200px;
 }
 
 #sectionContent {
     display: inline-block;
-    width: -moz-calc(98vw - 200px - 200px - 10px);
-    width: -webkit-calc(98vw - 200px - 200px - 10px);
-    width: -o-calc(98vw - 200px - 200px - 10px);
-    width: calc(98vw - 200px - 200px - 10px);
+    width: -moz-calc(98vw - 200px - 200px - 28px);
+    width: -webkit-calc(98vw - 200px - 200px - 28px);
+    width: -o-calc(98vw - 200px - 200px - 28px);
+    width: calc(98vw - 200px - 200px - 28px);
 }
 
 #sectionYTPlayer {
     display: inline-block;
-    width: -moz-calc(98vw - 200px - 200px - 10px);
-    width: -webkit-calc(98vw - 200px - 200px - 10px);
-    width: -o-calc(98vw - 200px - 200px - 10px);
-    width: calc(98vw - 200px - 200px - 10px);
+    width: -moz-calc(98vw - 200px - 200px - 28px);
+    width: -webkit-calc(98vw - 200px - 200px - 28px);
+    width: -o-calc(98vw - 200px - 200px - 28px);
+    width: calc(98vw - 200px - 200px - 28px);
 }
 
 #sectionLibrary {
-    vertical-align: top;
     display: inline-block;
+    vertical-align: top;
 }
 
 #sectionMenu {
-    vertical-align: top;
     display: inline-block;
+    vertical-align: top;
+}
+
+#sectionParent {
 }
 
 @media screen and (max-width: 900px) {
     iframe {
         width: 100%;
-        height: -moz-calc((98vw - 200px - 10px) * 0.60);
-        height: -webkit-calc((98vw - 200px - 10px) * 0.60);
-        height: -o-calc((98vw - 200px - 10px) * 0.60);
-        height: calc((98vw - 200px - 10px) * 0.60);
+        height: -moz-calc((98vw - 200px - 28px) * 0.60);
+        height: -webkit-calc((98vw - 200px - 28px) * 0.60);
+        height: -o-calc((98vw - 200px - 28px) * 0.60);
+        height: calc((98vw - 200px - 28px) * 0.60);
     }
 
     #sectionContent {
         display: inline-block;
-        width: -moz-calc(98vw - 200px - 10px);
-        width: -webkit-calc(98vw - 200px - 10px);
-        width: -o-calc(98vw - 200px - 10px);
-        width: calc(98vw - 200px - 10px);
+        width: -moz-calc(98vw - 200px - 28px);
+        width: -webkit-calc(98vw - 200px - 28px);
+        width: -o-calc(98vw - 200px - 28px);
+        width: calc(98vw - 200px - 28px);
     }
 
     #sectionYTPlayer {
         display: inline-block;
-        width: -moz-calc(98vw - 200px - 10px);
-        width: -webkit-calc(98vw - 200px - 10px);
-        width: -o-calc(98vw - 200px - 10px);
-        width: calc(98vw - 200px - 10px);
+        width: -moz-calc(98vw - 200px - 28px);
+        width: -webkit-calc(98vw - 200px - 28px);
+        width: -o-calc(98vw - 200px - 28px);
+        width: calc(98vw - 200px - 28px);
     }
 
     #sectionMenu {
-        vertical-align: top;
-        display: none;
+        position: fixed;
+        left: 0px;
+        bottom:0px;
     }
 }
 
 @media screen and (max-width: 700px) {
+    fieldset legend {
+        font-size: 100%;
+        font-weight: bold;
+        color: whitesmoke;
+    }
+
     iframe {
         width: 100%;
-        height: -moz-calc((98vw - 10px) * 0.60);
-        height: -webkit-calc((98vw - 10px) * 0.60);
-        height: -o-calc((98vw - 10px) * 0.60);
-        height: calc((98vw - 10px) * 0.60);
+        height: -moz-calc((98vw - 28px) * 0.60);
+        height: -webkit-calc((98vw - 28px) * 0.60);
+        height: -o-calc((98vw - 28px) * 0.60);
+        height: calc((98vw - 28px) * 0.60);
     }
 
     #library {
@@ -168,27 +238,62 @@ ul {
 
     #sectionContent {
         display: inline-block;
-        width: -moz-calc(98vw - 10px);
-        width: -webkit-calc(98vw - 10px);
-        width: -o-calc(98vw - 10px);
-        width: calc(98vw - 10px);
+        width: -moz-calc(98vw - 28px);
+        width: -webkit-calc(98vw - 28px);
+        width: -o-calc(98vw - 28px);
+        width: calc(98vw - 28px);
     }
 
     #sectionYTPlayer {
         display: inline-block;
-        width: -moz-calc(98vw - 10px);
-        width: -webkit-calc(98vw - 10px);
-        width: -o-calc(98vw - 10px);
-        width: calc(98vw - 10px);
+        width: -moz-calc(98vw - 28px);
+        width: -webkit-calc(98vw - 28px);
+        width: -o-calc(98vw - 28px);
+        width: calc(98vw - 28px);
     }
 
     #sectionLibrary {
-        display: block;
-        width: 100%;
+        position: fixed;
+        right: 0px;
+        bottom: 0px;
     }
 
     #sectionMenu {
-        vertical-align: top;
-        display: none;
+        position: fixed;
+        left: 0px;
+        bottom: 0px;
     }
+
+    .siteHeader {
+        padding: 10px 0px;
+        text-align: center;
+        font-family: Georgia, "Times New Roman", Times, serif;
+        font-style: italic;
+        font-size: 250%;
+        color: whitesmoke;
+        background-color: #202020;
+    }
+}
+
+.btn {
+    background-color: hsl(351, 68%, 11%) !important;
+    background-repeat: repeat-x;
+    background-image: -o-linear-gradient(top, #d12741, #2f080e);
+    background-image: linear-gradient(#d12741, #2f080e);
+    border-color: #2f080e #2f080e hsl(351, 68%, 1.5%);
+    border-radius: 5px;
+    color: #fff !important;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.62);
+    padding: 5px;
+}
+
+.btn:hover {
+    background-color: hsl(360, 68%, 60%) !important;
+    background-repeat: repeat-x;
+    background-image: linear-gradient(#fbeded, #de5353);
+    border-color: #de5353 #de5353 hsl(360, 68%, 51%);
+    border-radius: 5px;
+    color: #333 !important;
+    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.59);
+    padding: 5px;
 }

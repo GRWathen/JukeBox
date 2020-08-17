@@ -1,8 +1,10 @@
 <section id="sectionLibrary">
-    <div class="libraryName">{{ LIBRARY_NAME }}</div>
+{%- if LIBRARY_NAME != None -%}
+    <div id="libraryName" class="background">{{ LIBRARY_NAME }}</div>
+{%- endif %}
 {%- if VIDEOS != None -%}
     {%- set ARTIST = {"artist":None} -%}
-    <ul id="library">
+    <ul id="library" class="background">
     {% for VIDEO in VIDEOS %}
         {%- if VIDEO.artist != ARTIST["artist"] -%}
             {% if ARTIST["artist"] != None %}
