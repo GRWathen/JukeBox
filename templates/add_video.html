@@ -1,35 +1,42 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>JukeBox</title>
+        <title>World Wide Juke Web</title>
         <link rel="stylesheet" href="../static/reset.css">
         <link rel="stylesheet" href="../static/styles.css">
         <script src="../static/scripts.js"></script>
     </head>
     <body>
         {%- include "include/banner.html" -%}
-        <h1>Add Video</h1>
-        <form>
-            {{ FORM.hidden_tag() }}
-            {%- for FIELD in FORM
-                    if FIELD.widget.input_type != "hidden" -%}
-            <div>
-                {{ FIELD.label }}
-                {{ FIELD }}
-                {%- for ERROR in FIELD.errors -%}
-                {{ ERROR }}
-                {%- endfor -%}
-            </div>
-            {%- endfor -%}
-            <button type="submit" formaction="/videos/new" formmethod="POST">Add</button>
-            <button type="submit" formaction="/" formmethod="POST" formnovalidate=True>Cancel</button>
-            {%- with MESSAGES = get_flashed_messages() -%}
-                {%- if MESSAGES -%}
-                    {%- for MSG in MESSAGES -%}
-                    <div>{{ MSG }}</div>
+        <section id="sectionPage" class="background">
+            <h1>Add Video</h1>
+            <form>
+                {{ FORM.hidden_tag() }}
+                {%- for FIELD in FORM
+                        if FIELD.widget.input_type != "hidden" -%}
+                <div>
+                    {{ FIELD.label }}
+                    {{ FIELD }}
+                </div>
+                    {%- for ERROR in FIELD.errors -%}
+                <div>
+                    {{ ERROR }}
+                </div>
                     {%- endfor -%}
-                {%- endif -%}
-            {%- endwith -%}
-        </form>
+                {%- endfor -%}
+                <br>
+                <button class="btn" type="submit" formaction="/videos/new" formmethod="POST">Add</button>
+                <button class="btn" type="submit" formaction="/" formmethod="POST" formnovalidate=True>Cancel</button>
+                <br>
+                <br>
+                {%- with MESSAGES = get_flashed_messages() -%}
+                    {%- if MESSAGES -%}
+                        {%- for MSG in MESSAGES -%}
+                        <div class="message">{{ MSG }}</div>
+                        {%- endfor -%}
+                    {%- endif -%}
+                {%- endwith -%}
+            </form>
+        </section>
     </body>
 </html>

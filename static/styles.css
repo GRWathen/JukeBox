@@ -9,7 +9,7 @@ body {
 fieldset legend {
     font-size: 110%;
     font-weight: bold;
-    color: whitesmoke;
+    color: gold;
 }
 
 iframe {
@@ -37,7 +37,7 @@ ul {
     margin: 5px 0px;
     border: 2px solid black;
     border-radius: 10px;
-    background-color: silver;
+    background-color: rgba(192, 192, 192, 0.85); /* silver #C0C0C0 */
 }
 
 .backgroundNext {
@@ -82,6 +82,11 @@ ul {
     font-style: normal;
     font-weight: bold;
     color: orangered;
+}
+
+.message {
+    text-align: center;
+    color: red;
 }
 
 .nextButton {
@@ -182,6 +187,29 @@ ul {
 #sectionParent {
 }
 
+#sectionPage {
+    display: inline-block;
+    padding: 10px;
+    margin-top: 100px;
+    margin-left: 25%;
+    width: 50%;
+    text-align: center;
+}
+
+#sectionPage h1 {
+    font-size: 3em;
+}
+
+#sectionPage h1+div {
+    margin-bottom: 15px;
+}
+
+#sectionPage label {
+    display: inline-block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
 @media screen and (max-width: 900px) {
     iframe {
         width: 100%;
@@ -211,6 +239,15 @@ ul {
         position: fixed;
         left: 0px;
         bottom:0px;
+    }
+
+    #sectionPage {
+        display: inline-block;
+        padding: 10px;
+        margin-top: 50px;
+        margin-left: 25%;
+        width: 50%;
+        text-align: center;
     }
 }
 
@@ -262,6 +299,15 @@ ul {
         position: fixed;
         left: 0px;
         bottom: 0px;
+    }
+
+    #sectionPage {
+        display: inline-block;
+        padding: 10px;
+        margin-top: 25px;
+        margin-left: 25%;
+        width: 50%;
+        text-align: center;
     }
 
     .siteHeader {

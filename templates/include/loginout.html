@@ -19,7 +19,7 @@
     {%- with MESSAGES = get_flashed_messages() -%}
         {%- if MESSAGES -%}
             {%- for MSG in MESSAGES -%}
-            <div>{{ MSG }}</div>
+            <div class="message">{{ MSG }}</div>
             {%- endfor -%}
         {%- endif -%}
     {%- endwith %}

@@ -71,7 +71,7 @@ class AddVideoForm(FlaskForm):
     """Form for adding a video"""
     title = StringField("Title", validators=[InputRequired()])
     artist = StringField("Artist", validators=[InputRequired()])
-    video_id = StringField("Video ID")
+    video_id = StringField("YouTube Video ID")
 
 # ==================================================
 
@@ -89,7 +89,7 @@ class EditVideoForm(FlaskForm):
     """Form for editing a video"""
     title = StringField("Title", validators=[InputRequired()])
     artist = StringField("Artist", validators=[InputRequired()])
-    video_id = StringField("Video ID")
+    video_id = StringField("YouTube Video ID")
 
 # ==================================================
 

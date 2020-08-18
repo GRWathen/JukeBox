@@ -1,43 +1,52 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>JukeBox</title>
+        <title>World Wide Juke Web</title>
         <link rel="stylesheet" href="../static/reset.css">
         <link rel="stylesheet" href="../static/styles.css">
         <script src="../static/scripts.js"></script>
     </head>
     <body>
         {%- include "include/banner.html" -%}
-        <h1>Add Playlist</h1>
-        <form>
-            {{ FORM.hidden_tag() }}
-            {%- set COUNT = {"COUNT":0} -%}
-            {%- for FIELD in FORM
-                    if FIELD.widget.input_type != "hidden" -%}
-                {%- if COUNT["COUNT"] == 0 -%}
-            <div>
-                    {% if COUNT.update({"COUNT":1}) %}{% endif %}
-                    {{ FIELD.label }}
-                    {{ FIELD }}
+        <section id="sectionPage" class="background">
+            <h1>Add Playlist</h1>
+            <form>
+                {{ FORM.hidden_tag() }}
+                {%- set COUNT = {"COUNT":0} -%}
+                {%- for FIELD in FORM
+                        if FIELD.widget.input_type != "hidden" -%}
+                    {%- if COUNT["COUNT"] == 0 -%}
+                <div>
+                        {% if COUNT.update({"COUNT":1}) %}{% endif %}
+                        {{ FIELD.label }}
+                        {{ FIELD }}
+                </div>
+                        {%- for ERROR in FIELD.errors -%}
+                <div>
+                        {{ ERROR }}
+                </div>
+                        {%- endfor -%}
+                    {%- endif -%}
                     {%- for ERROR in FIELD.errors -%}
+                <div>
                     {{ ERROR }}
+                </div>
                     {%- endfor -%}
-            </div>
-                {%- endif -%}
-                {%- for ERROR in FIELD.errors -%}
-                {{ ERROR }}
                 {%- endfor -%}
-            {%- endfor -%}
-            {%- include "include/playlist.html" -%}
-            <button type="submit" formaction="/playlists/new" formmethod="POST">Add</button>
-            <button type="submit" formaction="/" formmethod="POST" formnovalidate=True>Cancel</button>
-            {%- with MESSAGES = get_flashed_messages() -%}
-                {%- if MESSAGES -%}
-                    {%- for MSG in MESSAGES -%}
-                    <div>{{ MSG }}</div>
-                    {%- endfor -%}
-                {%- endif -%}
-            {%- endwith -%}
-        </form>
+                {%- include "include/playlist.html" -%}
+                <br>
+                <button class="btn" type="submit" formaction="/playlists/new" formmethod="POST">Add</button>
+                <button class="btn" type="submit" formaction="/" formmethod="POST" formnovalidate=True>Cancel</button>
+                <br>
+                <br>
+                {%- with MESSAGES = get_flashed_messages() -%}
+                    {%- if MESSAGES -%}
+                        {%- for MSG in MESSAGES -%}
+                        <div class="message">{{ MSG }}</div>
+                        {%- endfor -%}
+                    {%- endif -%}
+                {%- endwith -%}
+            </form>
+        </section>
     </body>
 </html>

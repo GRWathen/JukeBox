@@ -2,7 +2,7 @@
 {%- if LIBRARY_NAME != None -%}
     <div id="libraryName" class="background">{{ LIBRARY_NAME }}</div>
 {%- endif %}
-{%- if VIDEOS != None -%}
+{%- if VIDEOS != None and VIDEOS|length != 0 -%}
     {%- set ARTIST = {"artist":None} -%}
     <ul id="library" class="background">
     {% for VIDEO in VIDEOS %}
