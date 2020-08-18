@@ -39,7 +39,7 @@ def homepage(path):
         playlists = Playlist.query.filter(Playlist.user_id == session["user_id"]).order_by(Playlist.name.asc()).all()
         videos = Video.query.filter(Video.user_id == session["user_id"]).order_by(Video.artist.asc(), Video.title.asc()).all()
 
-    return render_template("/extends/home.html", USER_ID=session.get("user_id"), LIBRARY_NAME=None, PLAYLISTS=playlists, VIDEOS=videos, FORM_LOG=form_log, FORM_ADD_PLAYLIST_BUTTON=form_add_playlist_button, FORM_ADD_VIDEO_BUTTON=form_add_video_button, FORM_EDIT_PLAYLIST_BUTTON=form_edit_playlist_button, FORM_EDIT_VIDEO_BUTTON=form_edit_video_button, FROM_ROUTE="/")
+    return render_template("/extends/home.html", FORM_LOG=form_log, USER_ID=session.get("user_id"), VIDEO=None, VIDEOS=videos, PLAYLISTS=playlists, LIBRARY_NAME=None, FORM_ADD_PLAYLIST_BUTTON=form_add_playlist_button, FORM_ADD_VIDEO_BUTTON=form_add_video_button, FORM_EDIT_PLAYLIST_BUTTON=form_edit_playlist_button, FORM_EDIT_VIDEO_BUTTON=form_edit_video_button, FROM_ROUTE="/")
 
 # ---------- REGISTER / LOGIN / LOGOUT ----------
 
@@ -236,7 +236,7 @@ def watch_playlist(id):
     videos = playlist.videos
     video = videos[random.randrange(0, len(videos))]
 
-    return render_template("/extends/playlist.html", USER_ID=session.get("user_id"), LIBRARY_NAME=playlist.name, PLAYLISTS=playlists, VIDEO=video, VIDEOS=videos, FORM_LOG=form_log, FORM_ADD_PLAYLIST_BUTTON=form_add_playlist_button, FORM_ADD_VIDEO_BUTTON=form_add_video_button, FORM_EDIT_PLAYLIST_BUTTON=form_edit_playlist_button, FORM_EDIT_VIDEO_BUTTON=form_edit_video_button, FROM_ROUTE="/playlists/{id}")
+    return render_template("/extends/playlist.html", FORM_LOG=form_log, USER_ID=session.get("user_id"), VIDEO=video, VIDEOS=videos, PLAYLISTS=playlists, LIBRARY_NAME=playlist.name, FORM_ADD_PLAYLIST_BUTTON=form_add_playlist_button, FORM_ADD_VIDEO_BUTTON=form_add_video_button, FORM_EDIT_PLAYLIST_BUTTON=form_edit_playlist_button, FORM_EDIT_VIDEO_BUTTON=form_edit_video_button, FROM_ROUTE="/playlists/{id}")
 
 @app.route("/playlists/new", methods=["GET", "POST"])
 def add_playlist():
@@ -285,13 +285,13 @@ def add_playlist():
                 flash(f"args:[{e.orig.args}]")
             else:
                 flash("ERROR")
-            return render_template("add_playlist.html", VIDEOS=videos, FORM=form, FROM_ROUTE="/playlists/new")
+            return render_template("add_playlist.html", FORM=form, VIDEOS=videos, FROM_ROUTE="/playlists/new")
         except Exception:
             db.session.rollback()
             flash("ERROR")
-            return render_template("add_playlist.html", VIDEOS=videos, FORM=form, FROM_ROUTE="/playlists/new")
+            return render_template("add_playlist.html", FORM=form, VIDEOS=videos, FROM_ROUTE="/playlists/new")
     else:
-        return render_template("add_playlist.html", VIDEOS=videos, FORM=form, FROM_ROUTE="/playlists/new")
+        return render_template("add_playlist.html", FORM=form, VIDEOS=videos, FROM_ROUTE="/playlists/new")
 
 @app.route("/playlists/<int:id>/edit", methods=["GET", "POST"])
 def edit_playlist(id):
@@ -370,13 +370,13 @@ def edit_playlist(id):
                 flash(f"args:[{e.orig.args}]")
             else:
                 flash("ERROR")
-            return render_template("edit_playlist.html", VIDEOS=videos, FORM=form, PLAYLIST_ID=id, FROM_ROUTE=f"/playlist/{id}/edit")
+            return render_template("edit_playlist.html", FORM=form, VIDEOS=videos, PLAYLIST_ID=id, FROM_ROUTE=f"/playlist/{id}/edit")
         except Exception as e:
             db.session.rollback()
             flash("ERROR")
-            return render_template("edit_playlist.html", VIDEOS=videos, FORM=form, PLAYLIST_ID=id, FROM_ROUTE=f"/playlist/{id}/edit")
+            return render_template("edit_playlist.html", FORM=form, VIDEOS=videos, PLAYLIST_ID=id, FROM_ROUTE=f"/playlist/{id}/edit")
     else:
-        return render_template("edit_playlist.html", VIDEOS=videos, FORM=form, PLAYLIST_ID=id, FROM_ROUTE=f"/playlists/{id}/edit")
+        return render_template("edit_playlist.html", FORM=form, VIDEOS=videos, PLAYLIST_ID=id, FROM_ROUTE=f"/playlists/{id}/edit")
 
 @app.route("/playlists/<int:id>/delete", methods=["POST"])
 def delete_playlist(id):

@@ -1,6 +1,7 @@
 {%- extends "base.html" -%}
 {%- block CONTENT -%}
 <section id="sectionYTPlayer">
+    <span id="videoBanner" class="background">{{ VIDEO.artist }} - {{ VIDEO.title }}</span>
     <span id="video_id" hidden>{{ VIDEO.video_id }}</span>
     <div id="video"></div>
     <div class="center"><button class="iconButton nextButton" type="click" onclick="playPlaylist();"><i class="fas fa-arrow-alt-circle-right backgroundNext"></i></button></div>

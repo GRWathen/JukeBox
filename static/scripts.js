@@ -42,21 +42,31 @@ function playPlaylist() {
     const ran = Math.floor(Math.random() * nodes.length);
     video_id.innerText = nodes[ran].attributes["video_id"].nodeValue;
 
-    document.getElementById("video").remove();
-
     let att = document.createAttribute("id");
     att.value = "video";
 
     let div = document.createElement("div");
     div.setAttributeNode(att);
 
+    document.getElementById("video").remove();
     video_id.parentNode.insertBefore(div, video_id.nextSibling);
     onYouTubeIframeAPIReady();
+
+    let banner = document.getElementById("videoBanner")
+    const title = nodes[ran].innerText;
+    const artist = nodes[ran].parentNode.parentNode.attributes["id"].value;
+    videoBanner.innerText = `${artist} - ${title}`;
 }
 
 function playVideo(videoID) {
     const video = document.getElementById("video");
     video.setAttribute("src", `https://www.youtube.com/embed/${videoID}?autoplay=1`);
+
+    let videoSpan = document.querySelector(`[video_id="${videoID}"]`);
+    let banner = document.getElementById("videoBanner")
+    const title = videoSpan.innerText;
+    const artist = videoSpan.parentNode.parentNode.attributes["id"].value;
+    videoBanner.innerText = `${artist} - ${title}`;
 }
 
 async function trashPlaylist(elem) {
