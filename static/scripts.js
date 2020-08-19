@@ -22,13 +22,13 @@ function toggleArtist(elem) {
 function checkboxArtist(elem) {
     const videos = elem.parentNode.getElementsByTagName("ul")[0].getElementsByTagName("li");
     for (let i = 0; i < videos.length; i++) {
-        const checkbox = videos[i].getElementsByTagName("input")[0]
+        const checkbox = videos[i].getElementsByTagName("input")[0];
         checkbox.checked = elem.checked;
     }
 }
 
 function playPlaylist() {
-    let video_id = document.getElementById("video_id")
+    let video_id = document.getElementById("video_id");
     let videos = document.querySelectorAll(".video");
     let nodes = [...videos];
 
@@ -52,7 +52,7 @@ function playPlaylist() {
     video_id.parentNode.insertBefore(div, video_id.nextSibling);
     onYouTubeIframeAPIReady();
 
-    let banner = document.getElementById("videoBanner")
+    let banner = document.getElementById("videoBanner");
     const title = nodes[ran].innerText;
     const artist = nodes[ran].parentNode.parentNode.attributes["id"].value;
     videoBanner.innerText = `${artist} - ${title}`;
@@ -63,7 +63,7 @@ function playVideo(videoID) {
     video.setAttribute("src", `https://www.youtube.com/embed/${videoID}?autoplay=1`);
 
     let videoSpan = document.querySelector(`[video_id="${videoID}"]`);
-    let banner = document.getElementById("videoBanner")
+    let banner = document.getElementById("videoBanner");
     const title = videoSpan.innerText;
     const artist = videoSpan.parentNode.parentNode.attributes["id"].value;
     videoBanner.innerText = `${artist} - ${title}`;
@@ -80,17 +80,23 @@ async function trashVideo(elem) {
 }
 
 async function deletePlaylist(item) {
-    const id = item.getAttribute("data-ID")
+    const id = item.getAttribute("data-ID");
     const response = await axios.post(`/playlists/${id}/delete`);
     if (response.data != "OK") {
         return false;
     }
+
     item.remove();
+
+    let count = document.getElementById("playlistCount");
+    let i = parseInt(count.innerText, 10) - 1;
+    count.innerText = i.toString();
+
     return true;
 }
 
 async function deleteVideo(item) {
-    const id = item.getAttribute("data-ID")
+    const id = item.getAttribute("data-ID");
     const response = await axios.post(`/videos/${id}/delete`);
     if (response.data != "OK") {
         return false;
@@ -98,8 +104,17 @@ async function deleteVideo(item) {
 
     const list = item.parentNode.parentNode;
     item.remove();
+
+    let count = document.getElementById("videoCount");
+    let i = parseInt(count.innerText, 10) - 1;
+    count.innerText = i.toString();
+
     if (list.getElementsByTagName("li").length === 0) {
+        let library = list.parentNode;
         list.remove();
+        if (library.getElementsByTagName("li").length === 0) {
+            library.remove();
+        }
     }
 
     return true;

@@ -6,6 +6,10 @@ from forms import AddPlaylistForm, AddPlaylistButtonForm, AddVideoForm, AddVideo
 from wtforms import BooleanField
 import random
 
+MAX_VIDEOS = 50
+MAX_PLAYLISTS = 5
+VIDEOS_PLAYLIST = 20
+
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "Don't look at me."
 app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql:///JukeBoxDB"
@@ -34,12 +38,16 @@ def homepage(path):
     form_edit_video_button = EditVideoButtonForm()
 
     playlists = None
+    playlist_count = 0
     videos = None
+    video_count = 0
     if session.get("user_id"):
         playlists = Playlist.query.filter(Playlist.user_id == session["user_id"]).order_by(Playlist.name.asc()).all()
+        playlist_count = len(playlists)
         videos = Video.query.filter(Video.user_id == session["user_id"]).order_by(Video.artist.asc(), Video.title.asc()).all()
+        video_count = len(videos)
 
-    return render_template("/extends/home.html", FORM_LOG=form_log, USER_ID=session.get("user_id"), VIDEO=None, VIDEOS=videos, PLAYLISTS=playlists, LIBRARY_NAME=None, FORM_ADD_PLAYLIST_BUTTON=form_add_playlist_button, FORM_ADD_VIDEO_BUTTON=form_add_video_button, FORM_EDIT_PLAYLIST_BUTTON=form_edit_playlist_button, FORM_EDIT_VIDEO_BUTTON=form_edit_video_button, FROM_ROUTE="/")
+    return render_template("/extends/home.html", FORM_LOG=form_log, USER_ID=session.get("user_id"), VIDEO=None, VIDEOS=videos, MAX_VIDEOS=MAX_VIDEOS, VIDEO_COUNT=video_count, PLAYLISTS=playlists, MAX_PLAYLISTS=MAX_PLAYLISTS, PLAYLIST_COUNT=playlist_count, LIBRARY_NAME=None, FORM_ADD_PLAYLIST_BUTTON=form_add_playlist_button, FORM_ADD_VIDEO_BUTTON=form_add_video_button, FORM_EDIT_PLAYLIST_BUTTON=form_edit_playlist_button, FORM_EDIT_VIDEO_BUTTON=form_edit_video_button, FROM_ROUTE="/")
 
 # ---------- REGISTER / LOGIN / LOGOUT ----------
 
@@ -231,18 +239,26 @@ def watch_playlist(id):
     form_edit_video_button = EditVideoButtonForm()
 
     playlists = Playlist.query.filter(Playlist.user_id == session["user_id"]).order_by(Playlist.name.asc()).all()
-
     playlist = Playlist.query.get(id)
+
     videos = playlist.videos
     video = videos[random.randrange(0, len(videos))]
 
-    return render_template("/extends/playlist.html", FORM_LOG=form_log, USER_ID=session.get("user_id"), VIDEO=video, VIDEOS=videos, PLAYLISTS=playlists, LIBRARY_NAME=playlist.name, FORM_ADD_PLAYLIST_BUTTON=form_add_playlist_button, FORM_ADD_VIDEO_BUTTON=form_add_video_button, FORM_EDIT_PLAYLIST_BUTTON=form_edit_playlist_button, FORM_EDIT_VIDEO_BUTTON=form_edit_video_button, FROM_ROUTE="/playlists/{id}")
+    playlist_count = len(playlists)
+    video_count = len(Video.query.filter(Video.user_id == session["user_id"]).order_by(Video.artist.asc(), Video.title.asc()).all())
+
+    return render_template("/extends/playlist.html", FORM_LOG=form_log, USER_ID=session.get("user_id"), VIDEO=video, VIDEOS=videos, MAX_VIDEOS=MAX_VIDEOS, VIDEO_COUNT=video_count, PLAYLISTS=playlists, MAX_PLAYLISTS=MAX_PLAYLISTS, PLAYLIST_COUNT=playlist_count, LIBRARY_NAME=playlist.name, FORM_ADD_PLAYLIST_BUTTON=form_add_playlist_button, FORM_ADD_VIDEO_BUTTON=form_add_video_button, FORM_EDIT_PLAYLIST_BUTTON=form_edit_playlist_button, FORM_EDIT_VIDEO_BUTTON=form_edit_video_button, FROM_ROUTE="/playlists/{id}")
 
 @app.route("/playlists/new", methods=["GET", "POST"])
 def add_playlist():
     """Add playlist"""
     if not session.get("username"):
         flash("You must be logged in")
+        return redirect("/")
+
+    playlists = Playlist.query.filter(Playlist.user_id == session["user_id"]).order_by(Playlist.name.asc()).all()
+    if (len(playlists) >= MAX_PLAYLISTS):
+        flash(f"Maximum of {MAX_PLAYLISTS} playlists reached")
         return redirect("/")
 
     videos = Video.query.filter(Video.user_id == session["user_id"]).order_by(Video.artist.asc(), Video.title.asc()).all()
@@ -265,8 +281,7 @@ def add_playlist():
             db.session.add(playlist)
             db.session.commit()
 
-            flash(f"{form.name.data} added")
-
+            count = 0
             for key, value in form.data.items():
                 if not key.isdigit():
                     continue
@@ -276,6 +291,22 @@ def add_playlist():
                     playlist_id=playlist.id,
                     video_id=int(key))
                 db.session.add(join)
+                count = count + 1
+
+            if count == 0:
+                db.session.rollback()
+                db.session.delete(playlist)
+                db.session.commit()
+                flash(f"Select videos")
+                return redirect("/playlists/new")
+            if count > VIDEOS_PLAYLIST:
+                db.session.rollback()
+                db.session.delete(playlist)
+                db.session.commit()
+                flash(f"Maximum {VIDEOS_PLAYLIST} allowed videos exceeded")
+                return redirect("/playlists/new")
+
+            flash(f"{form.name.data} added")
             db.session.commit()
 
             return redirect("/")
@@ -333,10 +364,8 @@ def edit_playlist(id):
     if form.validate_on_submit():
         try:
             playlist.name = form.name.data
-            db.session.commit()
 
-            flash(f"{form.name.data} edited")
-
+            count = 0
             for key, value in form.data.items():
                 if not key.isdigit():
                     continue
@@ -344,6 +373,7 @@ def edit_playlist(id):
                     continue
 
                 video_id = int(key)
+                count = count + 1
                 if video_id in video_IDs:
                     video_IDs.remove(video_id)
                     continue
@@ -352,16 +382,20 @@ def edit_playlist(id):
                     playlist_id=playlist.id,
                     video_id=video_id)
                 db.session.add(join)
-                db.session.commit()
 
             for video_id in video_IDs.copy():
                 p_v = Playlists_Videos.query.filter(Playlists_Videos.playlist_id == playlist.id, Playlists_Videos.video_id == video_id).first()
                 if p_v is not None:
                     db.session.delete(p_v)
-                    db.session.commit()
                 video_IDs.remove(video_id)
 
+            if count > VIDEOS_PLAYLIST:
+                db.session.rollback()
+                flash(f"Maximum {VIDEOS_PLAYLIST} allowed videos exceeded")
+                return redirect(f"/playlists/{id}/edit")
+
             db.session.commit()
+            flash(f"{form.name.data} edited")
 
             return redirect("/")
         except IntegrityError as e:
@@ -414,7 +448,12 @@ def add_video():
     if not session.get("username"):
         flash("You must be logged in")
         return redirect("/")
-    
+
+    videos = Video.query.filter(Video.user_id == session["user_id"]).order_by(Video.artist.asc(), Video.title.asc()).all()
+    if (len(videos) >= MAX_VIDEOS):
+        flash(f"Maximum of {MAX_VIDEOS} videos reached")
+        return redirect("/")
+
     form = AddVideoForm()
     if form.validate_on_submit():
         try:
