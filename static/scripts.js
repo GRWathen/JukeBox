@@ -31,16 +31,20 @@ function playPlaylist() {
     let video_id = document.getElementById("video_id");
     let videos = document.querySelectorAll(".video");
     let nodes = [...videos];
+    let node = nodes[0];
 
-    for (let i = 0; i < nodes.length; i++) {
-        if (nodes[i].attributes["video_id"].nodeValue === video_id.innerText) {
-            nodes.splice(i, 1);
-            break;
+    if (nodes.length > 1) {
+        for (let i = 0; i < nodes.length; i++) {
+            if (nodes[i].attributes["video_id"].nodeValue === video_id.innerText) {
+                nodes.splice(i, 1);
+                break;
+            }
         }
+        const ran = Math.floor(Math.random() * nodes.length);
+        node = nodes[ran];
     }
 
-    const ran = Math.floor(Math.random() * nodes.length);
-    video_id.innerText = nodes[ran].attributes["video_id"].nodeValue;
+    video_id.innerText = node.attributes["video_id"].nodeValue;
 
     let att = document.createAttribute("id");
     att.value = "video";
@@ -53,8 +57,8 @@ function playPlaylist() {
     onYouTubeIframeAPIReady();
 
     let banner = document.getElementById("videoBanner");
-    const title = nodes[ran].innerText;
-    const artist = nodes[ran].parentNode.parentNode.attributes["id"].value;
+    const title = node.innerText;
+    const artist = node.parentNode.parentNode.attributes["id"].value;
     videoBanner.innerText = `${artist} - ${title}`;
 }
 
