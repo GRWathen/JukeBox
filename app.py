@@ -527,7 +527,7 @@ def delete_video(id):
     """Delete video"""
     if not session.get("username"):
         return "You must be logged in"
-    
+
     try:
         video = Video.query.get(id)
         if video is None:
@@ -537,7 +537,6 @@ def delete_video(id):
         
         db.session.delete(video)
         db.session.commit()
-
         return "OK"
     except IntegrityError as e:
         db.session.rollback()

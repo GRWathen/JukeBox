@@ -80,7 +80,7 @@ class Playlist(db.Model):
 
     db.UniqueConstraint(user_id, name)
 
-    videos = db.relationship("Video", secondary="playlists_videos")
+    videos = db.relationship("Video", secondary="playlists_videos", order_by="Video.artist, Video.title")
 
 # ==================================================
 
