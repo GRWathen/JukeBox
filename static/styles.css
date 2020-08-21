@@ -158,6 +158,13 @@ ul {
     width: 200px;
 }
 
+#search {
+    margin-left: 5px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    width: 200px;
+}
+
 #videoBanner {
     display: inline-block;
     padding: 5px;
@@ -190,6 +197,18 @@ ul {
 #sectionMenu {
     display: inline-block;
     vertical-align: top;
+}
+
+#sectionSearches {
+    text-align: center;
+    color: white;
+}
+
+#sectionSearch {
+    display: inline-block;
+    vertical-align: top;
+    text-align: center;
+    color: white;
 }
 
 #sectionParent {

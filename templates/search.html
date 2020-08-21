@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>World Wide Juke Web</title>
+        
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+        <link rel="stylesheet" href="../static/reset.css">
+        <link rel="stylesheet" href="../static/styles.css">
+        
+        <script src="../static/scripts.js"></script>
+        <script src="../static/playlist.js"></script>
+        <script src="../static/youtube.js"></script>
+        <script src="../static/search.js"></script>
+        <script src="https://unpkg.com/axios/dist/axios.js"></script>
+    </head>
+    <body>
+        {%+ include "include/banner.html" %}
+        {%+ include "include/loginout.html" %}
+        <section id="sectionParent">
+        {%+ include "include/menu.html" %}
+            <section id="sectionContent">
+                <iframe id="video" frameborder="0" allowfullscreen="1" allow="accelerometer; autoplay; encrypted-media; picture-in-picture" title="YouTube video player" width="auto" height="auto" src="https://www.youtube.com/embed/"></iframe>
+            </section>
+        {%+ include "include/search.html" %}
+        </section>
+        <section id="sectionSearches">
+            SEARCHES
+        </section>
+    </body>
+</html>

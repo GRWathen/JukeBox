@@ -4,14 +4,16 @@ from sqlalchemy.exc import IntegrityError
 from models import db, connect_db, User, Video, Playlist, Playlists_Videos
 from forms import AddPlaylistForm, AddPlaylistButtonForm, AddVideoForm, AddVideoButtonForm, EditUserForm, EditPlaylistForm, EditPlaylistButtonForm, EditVideoForm, EditVideoButtonForm, LogInOutForm, RegisterForm
 from wtforms import BooleanField
-import random
+from secrets import SECRET_KEY, SECRET_API_KEY
+
+import datetime, random, requests
 
 MAX_VIDEOS = 50
 MAX_PLAYLISTS = 5
 VIDEOS_PLAYLIST = 20
 
 app = Flask(__name__)
-app.config["SECRET_KEY"] = "Don't look at me."
+app.config["SECRET_KEY"] = SECRET_KEY
 app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql:///JukeBoxDB"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SQLALCHEMY_ECHO"] = True
@@ -88,7 +90,7 @@ def register():
         if error:
             return render_template("register.html", FORM_LOG=form_log, FORM_REGISTER=form_register, FROM_ROUTE="/register")
 
-        user = User.register(name, pwd, email, pacode)
+        user = User.register(name, pwd, email, pacode, 0, datetime.datetime.now())
         db.session.add(user)
         try:
             db.session.commit()
@@ -546,5 +548,42 @@ def delete_video(id):
         db.session.rollback()
         flash("Exception")
         return "Exception"
+
+# ==================================================
+
+# -------------------- SEARCH --------------------
+
+# TODO: media queries
+
+@app.route("/search", methods=["GET", "POST"])
+def search():
+    """Show search page"""
+    if not session.get("username"):
+        flash("You must be logged in")
+        return redirect("/")
+    if not session.get("user_id"):
+        flash("You must be logged in")
+        return redirect("/")
+
+    form_log = LogInOutForm()
+    form_add_playlist_button = AddPlaylistButtonForm()
+    form_add_video_button = AddVideoButtonForm()
+    form_edit_playlist_button = EditPlaylistButtonForm()
+    form_edit_video_button = EditVideoButtonForm()
+
+    playlists = Playlist.query.filter(Playlist.user_id == session["user_id"]).order_by(Playlist.name.asc()).all()
+    playlist_count = len(playlists)
+    videos = Video.query.filter(Video.user_id == session["user_id"]).order_by(Video.artist.asc(), Video.title.asc()).all()
+    video_count = len(videos)
+
+    resp = requests.get(f"https://www.googleapis.com/youtube/v3/search?key={SECRET_API_KEY}&part=snippet&fields=items(id,snippet(title,thumbnails.default.url))&maxResults=50&type=video&videoEmbeddable=true&q=boating|sailing%20-fishing")
+
+    print("---=== SEARCH ===---")
+    print(resp.json())
+    print("********************")
+
+    #db.session.commit() # TODO: Why is there a ROLLBACK?!
+
+    return render_template("/search.html", FORM_LOG=form_log, USER_ID=session.get("user_id"), VIDEO=None, VIDEOS=videos, MAX_VIDEOS=MAX_VIDEOS, VIDEO_COUNT=video_count, PLAYLISTS=playlists, MAX_PLAYLISTS=MAX_PLAYLISTS, PLAYLIST_COUNT=playlist_count, LIBRARY_NAME=None, FORM_ADD_PLAYLIST_BUTTON=form_add_playlist_button, FORM_ADD_VIDEO_BUTTON=form_add_video_button, FORM_EDIT_PLAYLIST_BUTTON=form_edit_playlist_button, FORM_EDIT_VIDEO_BUTTON=form_edit_video_button, FROM_ROUTE="/search")
 
 # ==================================================
