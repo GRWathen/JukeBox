@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import IntegerField, StringField, PasswordField
+from wtforms import IntegerField, StringField, PasswordField, TextAreaField
 from wtforms.validators import InputRequired
 
 # -------------------- LogInOutForm --------------------
@@ -12,7 +12,6 @@ class LogInOutForm(FlaskForm):
 # -------------------- RegisterForm --------------------
 
 class RegisterForm(FlaskForm):
-
     """Form for registering a user"""
     username = StringField("Username", validators=[InputRequired()])
     password = PasswordField("Password", validators=[InputRequired()])
@@ -25,7 +24,6 @@ class RegisterForm(FlaskForm):
 # -------------------- EditUserForm --------------------
 
 class EditUserForm(FlaskForm):
-
     """Form for editing a user"""
     email = StringField("Email", validators=[InputRequired()])
     public_access_code = StringField("Public Access Code")
@@ -35,7 +33,6 @@ class EditUserForm(FlaskForm):
 # -------------------- AddPlaylistForm --------------------
 
 class AddPlaylistForm(FlaskForm):
-
     """Form for adding a playlist"""
     name = StringField("Name", validators=[InputRequired()])
 
@@ -51,7 +48,6 @@ class AddPlaylistButtonForm(FlaskForm):
 # -------------------- EditPlaylistForm --------------------
 
 class EditPlaylistForm(FlaskForm):
-
     """Form for editing a playlist"""
     name = StringField("Name", validators=[InputRequired()])
 
@@ -67,7 +63,6 @@ class EditPlaylistButtonForm(FlaskForm):
 # -------------------- AddVideoForm --------------------
 
 class AddVideoForm(FlaskForm):
-
     """Form for adding a video"""
     title = StringField("Title", validators=[InputRequired()])
     artist = StringField("Artist", validators=[InputRequired()])
@@ -85,7 +80,6 @@ class AddVideoButtonForm(FlaskForm):
 # -------------------- EditVideoForm --------------------
 
 class EditVideoForm(FlaskForm):
-
     """Form for editing a video"""
     title = StringField("Title", validators=[InputRequired()])
     artist = StringField("Artist", validators=[InputRequired()])
@@ -97,5 +91,13 @@ class EditVideoForm(FlaskForm):
 
 class EditVideoButtonForm(FlaskForm):
     """Form for edit video button"""
+
+# ==================================================
+
+# -------------------- SearchForm --------------------
+
+class SearchForm(FlaskForm):
+    """Form for seaching"""
+    keywords = TextAreaField("Keywords", validators=[InputRequired()])
 
 # ==================================================

@@ -4,12 +4,12 @@
         <li><hr></li>
         <li>About</li>
         <li>Settings</li>
-        <li><a href="/search">Search</a></li>
+        <li><a href="/search">Search</a> ({{ SEARCHES }} remaining)</li>
         <li>
             <form>
                 {{ FORM_ADD_VIDEO_BUTTON.hidden_tag() }}
                 <button class="btn" type="submit" formaction="/videos/new" formmethod="GET">Add Video</button>
-                <span><span id="videoCount">{{ VIDEO_COUNT }}</span> of {{ MAX_VIDEOS }}</span>
+                <span> (<span id="videoCount">{{ VIDEO_COUNT }}</span> of {{ MAX_VIDEOS }})</span>
             </form>
         </li>
         <li><hr></li>
@@ -33,7 +33,7 @@
             <form>
                 {{ FORM_ADD_PLAYLIST_BUTTON.hidden_tag() }}
                 <button class="btn" type="submit" formaction="/playlists/new" formmethod="GET">Add Playlist</button>
-                <span><span id="playlistCount">{{ PLAYLIST_COUNT }}</span> of {{ MAX_PLAYLISTS }}</span>
+                <span> (<span id="playlistCount">{{ PLAYLIST_COUNT }}</span> of {{ MAX_PLAYLISTS }})</span>
             </form>
         <li><hr></li>
         <li><a target="_blank" rel="noopener noreferrer" href="https://www.youtube.com/">Open YouTube</a></li>

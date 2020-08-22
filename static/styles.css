@@ -131,6 +131,10 @@ ul {
     cursor: pointer;
 }
 
+#keywords {
+    height: 5em;
+}
+
 #library {
     margin-left: 5px;
     padding-top: 10px;
@@ -163,6 +167,16 @@ ul {
     padding-top: 10px;
     padding-bottom: 10px;
     width: 200px;
+    text-align: center;
+    font-size: 150%;
+}
+
+#searchForm {
+    margin-left: 5px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    width: 200px;
+    text-align: center;
 }
 
 #videoBanner {
@@ -207,8 +221,6 @@ ul {
 #sectionSearch {
     display: inline-block;
     vertical-align: top;
-    text-align: center;
-    color: white;
 }
 
 #sectionParent {
