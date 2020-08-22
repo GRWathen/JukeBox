@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import IntegerField, StringField, PasswordField, TextAreaField
-from wtforms.validators import InputRequired
+from wtforms.validators import InputRequired, Length
 
 # -------------------- LogInOutForm --------------------
 
@@ -13,11 +13,11 @@ class LogInOutForm(FlaskForm):
 
 class RegisterForm(FlaskForm):
     """Form for registering a user"""
-    username = StringField("Username", validators=[InputRequired()])
+    username = StringField("Username", validators=[InputRequired(), Length(min=1, max=50)])
     password = PasswordField("Password", validators=[InputRequired()])
     confirm = PasswordField("Confirm", validators=[InputRequired()])
-    email = StringField("Email", validators=[InputRequired()])
-    public_access_code = StringField("Public Access Code")
+    email = StringField("Email", validators=[InputRequired(), Length(min=1, max=50)])
+    public_access_code = StringField("Public Access Code", validators=[Length(min=0, max=50)])
 
 # ==================================================
 
@@ -25,7 +25,7 @@ class RegisterForm(FlaskForm):
 
 class EditUserForm(FlaskForm):
     """Form for editing a user"""
-    email = StringField("Email", validators=[InputRequired()])
+    email = StringField("Email", validators=[InputRequired(), Length(max=50)])
     public_access_code = StringField("Public Access Code")
 
 # ==================================================
@@ -34,7 +34,7 @@ class EditUserForm(FlaskForm):
 
 class AddPlaylistForm(FlaskForm):
     """Form for adding a playlist"""
-    name = StringField("Name", validators=[InputRequired()])
+    name = StringField("Name", validators=[InputRequired(), Length(min=1, max=50)])
 
 # ==================================================
 
@@ -49,7 +49,7 @@ class AddPlaylistButtonForm(FlaskForm):
 
 class EditPlaylistForm(FlaskForm):
     """Form for editing a playlist"""
-    name = StringField("Name", validators=[InputRequired()])
+    name = StringField("Name", validators=[InputRequired(), Length(min=1, max=50)])
 
 # ==================================================
 
@@ -64,9 +64,9 @@ class EditPlaylistButtonForm(FlaskForm):
 
 class AddVideoForm(FlaskForm):
     """Form for adding a video"""
-    title = StringField("Title", validators=[InputRequired()])
-    artist = StringField("Artist", validators=[InputRequired()])
-    video_id = StringField("YouTube Video ID")
+    title = StringField("Title", validators=[InputRequired(), Length(min=1, max=50)])
+    artist = StringField("Artist", validators=[InputRequired(), Length(min=1, max=50)])
+    video_id = StringField("YouTube Video ID", validators=[InputRequired(), Length(min=1, max=50)])
 
 # ==================================================
 
@@ -81,9 +81,9 @@ class AddVideoButtonForm(FlaskForm):
 
 class EditVideoForm(FlaskForm):
     """Form for editing a video"""
-    title = StringField("Title", validators=[InputRequired()])
-    artist = StringField("Artist", validators=[InputRequired()])
-    video_id = StringField("YouTube Video ID")
+    title = StringField("Title", validators=[InputRequired(), Length(min=1, max=50)])
+    artist = StringField("Artist", validators=[InputRequired(), Length(min=1, max=50)])
+    video_id = StringField("YouTube Video ID", validators=[InputRequired(), Length(min=1, max=50)])
 
 # ==================================================
 
@@ -98,6 +98,6 @@ class EditVideoButtonForm(FlaskForm):
 
 class SearchForm(FlaskForm):
     """Form for seaching"""
-    keywords = TextAreaField("Keywords", validators=[InputRequired()])
+    keywords = TextAreaField("Keywords", validators=[InputRequired(), Length(min=1, max=50)])
 
 # ==================================================

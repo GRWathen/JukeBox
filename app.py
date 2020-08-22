@@ -47,12 +47,27 @@ def homepage(path):
     videos = None
     video_count = 0
     searches = 0
+
     if session.get("user_id"):
         playlists = Playlist.query.filter(Playlist.user_id == session["user_id"]).order_by(Playlist.name.asc()).all()
         playlist_count = len(playlists)
         videos = Video.query.filter(Video.user_id == session["user_id"]).order_by(Video.artist.asc(), Video.title.asc()).all()
         video_count = len(videos)
+
         user = User.query.get(session.get("user_id"))
+        if user.search_date.date() < datetime.datetime.now().date():
+            user.search_date = datetime.datetime.now().date()
+            save = user.searches
+            user.searches = 0
+
+            try:
+                db.session.add(user)
+                db.session.commit()
+            except Exception as e:
+                db.session.rollback()
+                user.searches = save
+                flash("ERROR")
+
         searches = MAX_SEARCHES - user.searches
 
     return render_template("/extends/home.html", FORM_LOG=form_log, USER_ID=session.get("user_id"), VIDEO=None, VIDEOS=videos, MAX_VIDEOS=MAX_VIDEOS, VIDEO_COUNT=video_count, PLAYLISTS=playlists, MAX_PLAYLISTS=MAX_PLAYLISTS, PLAYLIST_COUNT=playlist_count, SEARCHES=searches, LIBRARY_NAME=None, FORM_ADD_PLAYLIST_BUTTON=form_add_playlist_button, FORM_ADD_VIDEO_BUTTON=form_add_video_button, FORM_EDIT_PLAYLIST_BUTTON=form_edit_playlist_button, FORM_EDIT_VIDEO_BUTTON=form_edit_video_button, FROM_ROUTE="/")
@@ -231,14 +246,29 @@ def watch_playlist(id):
 
     playlists = None
     searches = 0
+
+    user = User.query.get(session.get("user_id"))
+    if user.search_date.date() < datetime.datetime.now().date():
+        user.search_date = datetime.datetime.now().date()
+        save = user.searches
+        user.searches = 0
+
+        try:
+            db.session.add(user)
+            db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+            user.searches = save
+            flash("ERROR")
+
+    searches = MAX_SEARCHES - user.searches
+
     try:
         playlist = Playlist.query.get(id)
         if playlist is None:
             raise Exception("None Exception")
         if playlist.user_id != session.get("user_id"):
             raise Exception("Invalid User")
-        user = User.query.get(session.get("user_id"))
-        searches = MAX_SEARCHES - user.searches
     except Exception:
         flash("Watch Playlist Error")
         return redirect("/")
@@ -615,6 +645,7 @@ def search():
 
     if form_search.validate_on_submit():
         keywords = form_search.keywords.data
+        user.keywords = keywords
         keywords = "+".join(keywords.strip().replace("|", "%7C").split())
 
         user.searches = user.searches + 1
@@ -630,6 +661,15 @@ def search():
         #resp = requests.get(f"https://www.googleapis.com/youtube/v3/search?key={SECRET_API_KEY}&part=snippet&fields=items(id,snippet(title,thumbnails.default.url))&maxResults=50&type=video&videoEmbeddable=true&q={keywords}")
         #json = resp.json()
         json = "{'items': [{'id': {'kind': 'youtube#video', 'videoId': 'cNJtrqb4Pl0'}, 'snippet': {'title': 'Geddy Lee Discusses The Way Rush Ended', 'thumbnails': {'default': {'url': 'https://i.ytimg.com/vi/cNJtrqb4Pl0/default.jpg'}}}}, {'id': {'kind': 'youtube#video', 'videoId': '04Ekje672mo'}, 'snippet': {'title': 'Rush&#39;s Geddy Lee on his Fender USA Geddy Lee Jazz Bass | Fender', 'thumbnails': {'default': {'url': 'https://i.ytimg.com/vi/04Ekje672mo/default.jpg'}}}}, {'id': {'kind': 'youtube#video', 'videoId': 'auLBLk4ibAk'}, 'snippet': {'title': 'Rush - Tom Sawyer (Official Music Video)', 'thumbnails': {'default': {'url': 'https://i.ytimg.com/vi/auLBLk4ibAk/default.jpg'}}}}, {'id': {'kind': 'youtube#video', 'videoId': 'uCr0f5S06A4'}, 'snippet': {'title': 'ASG 1993: Rush&#39;s Geddy Lee sings O Canada', 'thumbnails': {'default': {'url': 'https://i.ytimg.com/vi/uCr0f5S06A4/default.jpg'}}}}, {'id': {'kind': 'youtube#video', 'videoId': 'nEVDZl5UvN4'}, 'snippet': {'title': 'Rush - Fly By Night (Official Music Video)', 'thumbnails': {'default': {'url': 'https://i.ytimg.com/vi/nEVDZl5UvN4/default.jpg'}}}}, {'id': {'kind': 'youtube#video', 'videoId': 'ZrstPbrL1ss'}, 'snippet': {'title': 'Rush Fan Day Interview with Geddy Lee and Alex Lifeson', 'thumbnails': {'default': {'url': 'https://i.ytimg.com/vi/ZrstPbrL1ss/default.jpg'}}}}, {'id': {'kind': 'youtube#video', 'videoId': 'HGdQUMzRVxA'}, 'snippet': {'title': 'Geddy Lee ( bass Solo ) Time Machine 2011', 'thumbnails': {'default': {'url': 'https://i.ytimg.com/vi/HGdQUMzRVxA/default.jpg'}}}}, {'id': {'kind': 'youtube#video', 'videoId': 'GBVya4G8uNQ'}, 'snippet': {'title': 'The Big Interview with Dan Rather: Geddy Lee of Rush - Sneak Peek | AXS TV', 'thumbnails': {'default': {'url': 'https://i.ytimg.com/vi/GBVya4G8uNQ/default.jpg'}}}}, {'id': {'kind': 'youtube#video', 'videoId': 'Q0UEngM9AXI'}, 'snippet': {'title': 'Rock Icons Rushs Geddy Lee Documentary', 'thumbnails': {'default': {'url': 'https://i.ytimg.com/vi/Q0UEngM9AXI/default.jpg'}}}}, {'id': {'kind': 'youtube#video', 'videoId': '6JiBs6Dkiwo'}, 'snippet': {'title': 'The Only Band That Geddy Lee of Rush Ever Stood In Line For', 'thumbnails': {'default': {'url': 'https://i.ytimg.com/vi/6JiBs6Dkiwo/default.jpg'}}}}, {'id': {'kind': 'youtube#video', 'videoId': '7kveiFvr0Uk'}, 'snippet': {'title': 'Rush - Tom Sawyer - Geddy Lee voice change', 'thumbnails': {'default': {'url': 'https://i.ytimg.com/vi/7kveiFvr0Uk/default.jpg'}}}}, {'id': {'kind': 'youtube#video', 'videoId': 'jIMmdOZlmrU'}, 'snippet': {'title': 'Rush&#39;s Geddy Lee on his obsession with the history of the bass guitar', 'thumbnails': {'default': {'url': 'https://i.ytimg.com/vi/jIMmdOZlmrU/default.jpg'}}}}, {'id': {'kind': 'youtube#video', 'videoId': 'gu7zKwerKCM'}, 'snippet': {'title': 'That Metal Show | Rush&#39;s Geddy Lee: Behind the Scenes | VH1 Classic', 'thumbnails': {'default': {'url': 'https://i.ytimg.com/vi/gu7zKwerKCM/default.jpg'}}}}, {'id': {'kind': 'youtube#video', 'videoId': 'hPxwSF4CGyo'}, 'snippet': {'title': 'Geddy Lee Tells His Family&#39;s Holocaust Story (Full Interview)', 'thumbnails': {'default': {'url': 'https://i.ytimg.com/vi/hPxwSF4CGyo/default.jpg'}}}}, {'id': {'kind': 'youtube#video', 'videoId': 'sWVs5iSYTdM'}, 'snippet': {'title': 'Geddy Lee on his ‘Book of Bass’ and why Rush won’t tour again', 'thumbnails': {'default': {'url': 'https://i.ytimg.com/vi/sWVs5iSYTdM/default.jpg'}}}}, {'id': {'kind': 'youtube#video', 'videoId': 'L82ARErk5LQ'}, 'snippet': {'title': 'Geddy Lee from Rush visits Norman&#39;s Rare Guitars', 'thumbnails': {'default': {'url': 'https://i.ytimg.com/vi/L82ARErk5LQ/default.jpg'}}}}, {'id': {'kind': 'youtube#video', 'videoId': 'ZBtuCyjqn8E'}, 'snippet': {'title': 'Rush: The Final Year of Neil Peart&#39;s Life Revealed &amp; Last Public Photo', 'thumbnails': {'default': {'url': 'https://i.ytimg.com/vi/ZBtuCyjqn8E/default.jpg'}}}}, {'id': {'kind': 'youtube#video', 'videoId': '5NXdxQDkTwU'}, 'snippet': {'title': 'Geddy Lee plays Jam or Not a Jam', 'thumbnails': {'default': {'url': 'https://i.ytimg.com/vi/5NXdxQDkTwU/default.jpg'}}}}, {'id': {'kind': 'youtube#video', 'videoId': 'OeKzKf8rX4E'}, 'snippet': {'title': 'Geddy Lee before Rush', 'thumbnails': {'default': {'url': 'https://i.ytimg.com/vi/OeKzKf8rX4E/default.jpg'}}}}, {'id': {'kind': 'youtube#video', 'videoId': 't1-NsnlPc54'}, 'snippet': {'title': 'Yes Roundabout with Geddy Lee on Rock &amp; Roll Hall of Fame 2017', 'thumbnails': {'default': {'url': 'https://i.ytimg.com/vi/t1-NsnlPc54/default.jpg'}}}}, {'id': {'kind': 'youtube#video', 'videoId': '631yLIjqACM'}, 'snippet': {'title': 'Geddy Lee on his ‘Book of Bass’ and why Rush won’t tour again', 'thumbnails': {'default': {'url': 'https://i.ytimg.com/vi/631yLIjqACM/default.jpg'}}}}, {'id': {'kind': 'youtube#video', 'videoId': '-SZbGQ-pTZY'}, 'snippet': {'title': 'Geddy Lee Explains His Right-Hand Picking Technique | Fender', 'thumbnails': {'default': {'url': 'https://i.ytimg.com/vi/-SZbGQ-pTZY/default.jpg'}}}}, {'id': {'kind': 'youtube#video', 'videoId': 'GFze-Oj2UdA'}, 'snippet': {'title': 'Rush Answers Your Twitter and Facebook Questions', 'thumbnails': {'default': {'url': 'https://i.ytimg.com/vi/GFze-Oj2UdA/default.jpg'}}}}, {'id': {'kind': 'youtube#video', 'videoId': 'SouCSF45K48'}, 'snippet': {'title': 'Rush - YYZ (Live HD)', 'thumbnails': {'default': {'url': 'https://i.ytimg.com/vi/SouCSF45K48/default.jpg'}}}}, {'id': {'kind': 'youtube#video', 'videoId': 'dMSFqXGZ5TQ'}, 'snippet': {'title': 'Rush - Time Stand Still (Official Music Video)', 'thumbnails': {'default': {'url': 'https://i.ytimg.com/vi/dMSFqXGZ5TQ/default.jpg'}}}}, {'id': {'kind': 'youtube#video', 'videoId': 'kOAPd1kfPNk'}, 'snippet': {'title': 'Rush - Limelight', 'thumbnails': {'default': {'url': 'https://i.ytimg.com/vi/kOAPd1kfPNk/default.jpg'}}}}, {'id': {'kind': 'youtube#video', 'videoId': '34wk_onk50E'}, 'snippet': {'title': 'Geddy Lee from Rush Interview at Abbey Road Studios', 'thumbnails': {'default': {'url': 'https://i.ytimg.com/vi/34wk_onk50E/default.jpg'}}}}, {'id': {'kind': 'youtube#video', 'videoId': '2rdDbqQyJMA'}, 'snippet': {'title': 'Rush&#39;s Alex Lifeson Hasn&#39;t Felt Inspired Since Neil Peart&#39;s Death', 'thumbnails': {'default': {'url': 'https://i.ytimg.com/vi/2rdDbqQyJMA/default.jpg'}}}}, {'id': {'kind': 'youtube#video', 'videoId': 'LhfGASMhKeQ'}, 'snippet': {'title': 'GEDDY LEE - RUSH - WINTER CELEBRITY ADVICE', 'thumbnails': {'default': {'url': 'https://i.ytimg.com/vi/LhfGASMhKeQ/default.jpg'}}}}, {'id': {'kind': 'youtube#video', 'videoId': 'aSEO-aJVq78'}, 'snippet': {'title': 'That Metal Show | Rush&#39;s Geddy Lee On Being A Baseball Fan | VH1 Classic', 'thumbnails': {'default': {'url': 'https://i.ytimg.com/vi/aSEO-aJVq78/default.jpg'}}}}, {'id': {'kind': 'youtube#video', 'videoId': 'SEuOoMprDqg'}, 'snippet': {'title': 'Rush - Xanadu (Official Music Video)', 'thumbnails': {'default': {'url': 'https://i.ytimg.com/vi/SEuOoMprDqg/default.jpg'}}}}, {'id': {'kind': 'youtube#video', 'videoId': 'jpAmK111ACk'}, 'snippet': {'title': 'Geddy Lee Bass Rig - RUSH - Know Your Bass Player', 'thumbnails': {'default': {'url': 'https://i.ytimg.com/vi/jpAmK111ACk/default.jpg'}}}}, {'id': {'kind': 'youtube#video', 'videoId': 'JnC88xBPkkc'}, 'snippet': {'title': 'Rush - The Trees (Official Music Video)', 'thumbnails': {'default': {'url': 'https://i.ytimg.com/vi/JnC88xBPkkc/default.jpg'}}}}, {'id': {'kind': 'youtube#video', 'videoId': 'ejtHdjd3BGI'}, 'snippet': {'title': 'Rush - R40 Tour - Geddy Lee Webisode Part 2', 'thumbnails': {'default': {'url': 'https://i.ytimg.com/vi/ejtHdjd3BGI/default.jpg'}}}}, {'id': {'kind': 'youtube#video', 'videoId': 'Af2-WQE_j4c'}, 'snippet': {'title': 'RUSH interview - Geddy Lee and Alex Lifeson - Brazil - november 2002', 'thumbnails': {'default': {'url': 'https://i.ytimg.com/vi/Af2-WQE_j4c/default.jpg'}}}}, {'id': {'kind': 'youtube#video', 'videoId': 'dptj4dMuS1w'}, 'snippet': {'title': 'Geddy Lee Amazing Bass Solo', 'thumbnails': {'default': {'url': 'https://i.ytimg.com/vi/dptj4dMuS1w/default.jpg'}}}}, {'id': {'kind': 'youtube#video', 'videoId': 'ykGIq_fBa3U'}, 'snippet': {'title': 'Rush | The Legend of &quot;The Bag&quot; | Time Stand Still', 'thumbnails': {'default': {'url': 'https://i.ytimg.com/vi/ykGIq_fBa3U/default.jpg'}}}}, {'id': {'kind': 'youtube#video', 'videoId': 'OQDDzq792Qw'}, 'snippet': {'title': 'RUSH - &quot;Tom Sawyer&quot; (live 1988)', 'thumbnails': {'default': {'url': 'https://i.ytimg.com/vi/OQDDzq792Qw/default.jpg'}}}}, {'id': {'kind': 'youtube#video', 'videoId': 'eV-5iNu6Sd8'}, 'snippet': {'title': 'Rush - A Farewell To Kings (Official Music Video)', 'thumbnails': {'default': {'url': 'https://i.ytimg.com/vi/eV-5iNu6Sd8/default.jpg'}}}}, {'id': {'kind': 'youtube#video', 'videoId': 'KzrOt-ZxpVc'}, 'snippet': {'title': 'Você quer o Rush sem Neil Peart? | Papo Reto | Alta Fidelidade', 'thumbnails': {'default': {'url': 'https://i.ytimg.com/vi/KzrOt-ZxpVc/default.jpg'}}}}, {'id': {'kind': 'youtube#video', 'videoId': 'dqYiTTD1IXg'}, 'snippet': {'title': 'Northern Lights - Rush - Geddy Lee', 'thumbnails': {'default': {'url': 'https://i.ytimg.com/vi/dqYiTTD1IXg/default.jpg'}}}}, {'id': {'kind': 'youtube#video', 'videoId': 'yrZJebJFou8'}, 'snippet': {'title': 'Rush &quot;The Big Money&quot;  Geddy Lee Bass Part', 'thumbnails': {'default': {'url': 'https://i.ytimg.com/vi/yrZJebJFou8/default.jpg'}}}}, {'id': {'kind': 'youtube#video', 'videoId': 'yz5UBnk-JOg'}, 'snippet': {'title': 'Geddy Lee on being the a Child of a Holocaust Survivor | SiriusXM Town Hall with Rush', 'thumbnails': {'default': {'url': 'https://i.ytimg.com/vi/yz5UBnk-JOg/default.jpg'}}}}, {'id': {'kind': 'youtube#video', 'videoId': '7A-48kvH02k'}, 'snippet': {'title': 'Alex Lifeson and Geddy Lee both post to Social Media - first time since Neil Peart&#39;s passing', 'thumbnails': {'default': {'url': 'https://i.ytimg.com/vi/7A-48kvH02k/default.jpg'}}}}, {'id': {'kind': 'youtube#video', 'videoId': '7qa7p6gFIGw'}, 'snippet': {'title': 'That Metal Show | Rush&#39;s Geddy Lee Ranks Best Of Rush Albums | VH1 Classic', 'thumbnails': {'default': {'url': 'https://i.ytimg.com/vi/7qa7p6gFIGw/default.jpg'}}}}, {'id': {'kind': 'youtube#video', 'videoId': 'fZvVBZZDHRE'}, 'snippet': {'title': 'The Singing Style of Geddy Lee - RUSH... Light, Bright,  Mixed Voice. (PS Thank You Neil Peart)', 'thumbnails': {'default': {'url': 'https://i.ytimg.com/vi/fZvVBZZDHRE/default.jpg'}}}}, {'id': {'kind': 'youtube#video', 'videoId': 'U6qyhiVPzCg'}, 'snippet': {'title': 'Geddy Lee signs autographs for RUSH fans on Hollywood Walk of Fame', 'thumbnails': {'default': {'url': 'https://i.ytimg.com/vi/U6qyhiVPzCg/default.jpg'}}}}, {'id': {'kind': 'youtube#video', 'videoId': 'omumqjSurAM'}, 'snippet': {'title': 'Rush Snakes &amp; Arrows Tour - Geddy Lee - Tuning Room Interview', 'thumbnails': {'default': {'url': 'https://i.ytimg.com/vi/omumqjSurAM/default.jpg'}}}}, {'id': {'kind': 'youtube#video', 'videoId': 'ONFuKLgP-70'}, 'snippet': {'title': 'Rush Geddy Lee Tom Sawyer Bass Lesson', 'thumbnails': {'default': {'url': 'https://i.ytimg.com/vi/ONFuKLgP-70/default.jpg'}}}}, {'id': {'kind': 'youtube#video', 'videoId': 'VL_7pVb2lI0'}, 'snippet': {'title': 'Geddy Lee on Religion', 'thumbnails': {'default': {'url': 'https://i.ytimg.com/vi/VL_7pVb2lI0/default.jpg'}}}}]}"
+
+        user.json = json
+        try:
+            db.session.add(user)
+            db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+            flash("ERROR")
+            return redirect("/")
 
         return render_template("/search.html", FORM_LOG=form_log, USER_ID=session.get("user_id"), VIDEO=None, VIDEOS=videos, MAX_VIDEOS=MAX_VIDEOS, VIDEO_COUNT=video_count, PLAYLISTS=playlists, MAX_PLAYLISTS=MAX_PLAYLISTS, PLAYLIST_COUNT=playlist_count, SEARCHES=searches, FORM_ADD_PLAYLIST_BUTTON=form_add_playlist_button, FORM_ADD_VIDEO_BUTTON=form_add_video_button, FORM_EDIT_PLAYLIST_BUTTON=form_edit_playlist_button, FORM_SEARCH=form_search, FROM_ROUTE="/search")
     else:

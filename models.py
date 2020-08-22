@@ -24,6 +24,8 @@ class User(db.Model):
     public_access_code = db.Column(db.String(50), unique=True)
     searches = db.Column(db.Integer, nullable=False)
     search_date = db.Column(db.DateTime, nullable=False)
+    keywords = db.Column(db.String(50), nullable=False)
+    json = db.Column(db.Text, nullable=False)
 
     @classmethod
     def register(cls, username, pwd, email, pacode, searches, search_date):
@@ -32,7 +34,7 @@ class User(db.Model):
         # turn bytestring into normal (unicode utf8) string
         hashed_utf8 = hashed.decode("utf8")
         # return instance of user w/username and hashed pwd
-        return cls(username=username, password=hashed_utf8, email=email, public_access_code=pacode, searches=searches, search_date=search_date)
+        return cls(username=username, password=hashed_utf8, email=email, public_access_code=pacode, searches=searches, search_date=search_date, keywords="", json="")
 
     @classmethod
     def authenticate(cls, username, pwd):
