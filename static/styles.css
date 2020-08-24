@@ -12,6 +12,11 @@ fieldset legend {
     color: gold;
 }
 
+hr {
+    margin-top: 3px;
+    margin-bottom: 3px;
+}
+
 iframe {
     width: 100%;
     height: -moz-calc((98vw - 200px - 200px - 28px) * 0.60);
@@ -26,6 +31,11 @@ ul {
     list-style-type: none;
 }
 
+.arrow {
+    border: none;
+    background: none;
+}
+
 .artist {
     font-family: sans-serif;
     text-decoration: underline;
@@ -35,6 +45,7 @@ ul {
 
 .background {
     margin: 5px 0px;
+    padding: 5px;
     border: 2px solid black;
     border-radius: 10px;
     background-color: rgba(192, 192, 192, 0.85); /* silver #C0C0C0 */
@@ -129,6 +140,47 @@ ul {
 .video {
     text-decoration: underline;
     cursor: pointer;
+}
+
+.prevArrow {
+    display: inline-block;
+    vertical-align: middle;
+    height: 150px;
+    width: 94px;
+    text-align: center;
+}
+
+.searchThumbnail {
+    display: none;
+    width: 200px;
+}
+
+.searchThumbnail:nth-child(-n+3) {
+    display: inline-block;
+    width: 200px;
+}
+
+.imageThumbnail {
+    height: 150px;
+    width: 200px;
+    border: solid 2px white;
+}
+
+.titleThumbnail {
+    display: inline-block;
+    width: 200px;
+}
+
+img:hover {
+    border: solid 2px yellow;
+}
+
+.nextArrow {
+    display: inline-block;
+    vertical-align: middle;
+    height: 150px;
+    width: 94px;
+    text-align: center;
 }
 
 #keywords {
@@ -305,7 +357,7 @@ ul {
         height: calc((98vw - 28px) * 0.60);
     }
 
-    #library {
+    #menu {
         display: block;
         width: 200px;
         margin-left: auto;
@@ -337,6 +389,12 @@ ul {
     #sectionMenu {
         position: fixed;
         left: 0px;
+        bottom: 0px;
+    }
+
+    #sectionSearch {
+        position: fixed;
+        right: 0px;
         bottom: 0px;
     }
 

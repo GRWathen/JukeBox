@@ -131,3 +131,18 @@ async function trashArtist(elem) {
         deleteVideo(item);
     }
 }
+
+function shiftVideos(direction) {
+    let thumbnails = document.getElementById("thumbnails").getElementsByClassName("searchThumbnail");
+
+    if (direction === -1) {
+        let item = thumbnails[thumbnails.length-1].cloneNode(true);
+        thumbnails[thumbnails.length-1].remove();
+        document.getElementById("thumbnails").prepend(item);
+    }
+    else {
+        let item = thumbnails[0].cloneNode(true);
+        thumbnails[0].remove();
+        document.getElementById("thumbnails").append(item);
+    }
+}

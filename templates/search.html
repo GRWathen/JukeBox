@@ -24,7 +24,21 @@
         {%+ include "include/search.html" %}
         </section>
         <section id="sectionSearches">
-            SEARCHES
+            <div class="prevArrow">
+                <button class="iconButton nextButton" type="click" onclick="shiftVideos(-1);"><i class="fas fa-caret-square-left backgroundNext"></i></button>
+            </div>
+            <span id="thumbnails">
+            {% for THUMBNAIL in THUMBNAILS %}
+                <span class="searchThumbnail">
+                    <img class="imageThumbnail" src="{{ THUMBNAIL['snippet']['thumbnails']['default']['url'] }}" onclick="playVideo('{{ THUMBNAIL['id']['videoId'] }}')">
+                    <span class="titleThumbnail background">{{ THUMBNAIL['snippet']['title'] }}</span>
+                    <a class="background" href="/videos/new?title={{ THUMBNAIL['snippet']['title'] }}&video_id={{ THUMBNAIL['id']['videoId'] }}">Add Video</a>
+                </span>
+            {% endfor %}
+            </span>
+            <div class="nextArrow">
+                <button class="iconButton nextButton" type="click" onclick="shiftVideos(1);"><i class="fas fa-caret-square-right backgroundNext"></i></button>
+            </div>
         </section>
     </body>
 </html>
