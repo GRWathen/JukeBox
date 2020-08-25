@@ -152,15 +152,12 @@ ul {
 
 .searchThumbnail {
     display: none;
-    width: 200px;
-}
-
-.searchThumbnail:nth-child(-n+3) {
-    display: inline-block;
+    margin: 10px;
     width: 200px;
 }
 
 .imageThumbnail {
+    margin: 5px;
     height: 150px;
     width: 200px;
     border: solid 2px white;
@@ -168,6 +165,7 @@ ul {
 
 .titleThumbnail {
     display: inline-block;
+    margin-bottom: 10px;
     width: 200px;
 }
 
@@ -301,6 +299,14 @@ img:hover {
     font-weight: bold;
 }
 
+@media screen and (min-width: 901px) {
+    .searchThumbnail:nth-child(-n+3) {
+        display: inline-block;
+        margin: 10px;
+        width: 200px;
+    }
+}
+
 @media screen and (max-width: 900px) {
     iframe {
         width: 100%;
@@ -308,6 +314,40 @@ img:hover {
         height: -webkit-calc((98vw - 200px - 28px) * 0.60);
         height: -o-calc((98vw - 200px - 28px) * 0.60);
         height: calc((98vw - 200px - 28px) * 0.60);
+        padding: 5px;
+    }
+
+    #library {
+        margin-left: 5px;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        width: 200px;
+    }
+
+    #menu {
+        display: block;
+        width: 200px;
+        margin-left: auto;
+        margin-right: auto;
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+
+    #search {
+        margin-left: 5px;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        width: 200px;
+        text-align: center;
+        font-size: 150%;
+    }
+
+    #searchForm {
+        margin-left: 5px;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        width: 200px;
+        text-align: center;
     }
 
     #sectionContent {
@@ -324,12 +364,16 @@ img:hover {
         width: -webkit-calc(98vw - 200px - 28px);
         width: -o-calc(98vw - 200px - 28px);
         width: calc(98vw - 200px - 28px);
+        text-align: center;
     }
 
     #sectionMenu {
         position: fixed;
         left: 0px;
         bottom:0px;
+        display: initial;
+        vertical-align: initial;
+        display: initial;
     }
 
     #sectionPage {
@@ -338,6 +382,61 @@ img:hover {
         margin-top: 50px;
         margin-left: 25%;
         width: 50%;
+        text-align: center;
+    }
+
+    #sectionSearches {
+        text-align: initial;
+        color: white;
+    }
+
+    .nextButton {
+        font-size: 300%;
+        cursor: pointer;
+    }
+
+    .prevArrow {
+        display: inline-block;
+        margin-left: 215px;
+        vertical-align: middle;
+        height: 150px;
+        width: 50px;
+        text-align: center;
+    }
+
+    .searchThumbnail {
+        display: none;
+        margin: 0px;
+        width: 150px;
+        text-align: center;
+    }
+
+    .searchThumbnail:nth-child(-n+1) {
+        display: inline-block;
+        margin: 0px;
+        width: 150px;
+        text-align: center;
+    }
+
+    .imageThumbnail {
+        margin: 5px;
+        height: 150px;
+        width: 150px;
+        border: solid 2px white;
+    }
+
+    .titleThumbnail {
+        margin-bottom: 10px;
+        display: inline-block;
+        width: 150px;
+    }
+
+    .nextArrow {
+        display: inline-block;
+        margin-left: 15px;
+        vertical-align: middle;
+        height: 150px;
+        width: 50px;
         text-align: center;
     }
 }
@@ -355,13 +454,40 @@ img:hover {
         height: -webkit-calc((98vw - 28px) * 0.60);
         height: -o-calc((98vw - 28px) * 0.60);
         height: calc((98vw - 28px) * 0.60);
+        padding: 5px;
+    }
+
+    #library {
+        margin-left: 5px;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        width: 175px;
     }
 
     #menu {
         display: block;
-        width: 200px;
+        width: 175px;
         margin-left: auto;
         margin-right: auto;
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+
+    #search {
+        margin-left: 5px;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        width: 175px;
+        text-align: center;
+        font-size: 150%;
+    }
+
+    #searchForm {
+        margin-left: 5px;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        width: 175px;
+        text-align: center;
     }
 
     #sectionContent {
@@ -378,24 +504,31 @@ img:hover {
         width: -webkit-calc(98vw - 28px);
         width: -o-calc(98vw - 28px);
         width: calc(98vw - 28px);
+        text-align: center;
     }
 
     #sectionLibrary {
         position: fixed;
         right: 0px;
         bottom: 0px;
+        display: initial;
+        vertical-align: initial;
     }
 
     #sectionMenu {
         position: fixed;
         left: 0px;
         bottom: 0px;
+        display: initial;
+        vertical-align: initial;
     }
 
     #sectionSearch {
         position: fixed;
         right: 0px;
         bottom: 0px;
+        display: initial;
+        vertical-align: initial;
     }
 
     #sectionPage {
@@ -404,6 +537,61 @@ img:hover {
         margin-top: 25px;
         margin-left: 25%;
         width: 50%;
+        text-align: center;
+    }
+
+    #sectionSearches {
+        text-align: center;
+        color: white;
+    }
+
+    .nextButton {
+        font-size: 300%;
+        cursor: pointer;
+    }
+
+    .prevArrow {
+        display: inline-block;
+        margin-left: 5px;
+        vertical-align: middle;
+        height: 150px;
+        width: 50px;
+        text-align: center;
+    }
+
+    .searchThumbnail {
+        display: none;
+        margin: 0px;
+        width: 150px;
+        text-align: center;
+    }
+
+    .searchThumbnail:nth-child(-n+1) {
+        display: inline-block;
+        margin: 0px;
+        width: 150px;
+        text-align: center;
+    }
+
+    .imageThumbnail {
+        margin: 5px;
+        height: 150px;
+        width: 150px;
+        border: solid 2px white;
+    }
+
+    .titleThumbnail {
+        margin-bottom: 10px;
+        display: inline-block;
+        width: 150px;
+    }
+
+    .nextArrow {
+        display: inline-block;
+        margin-left: initial;
+        vertical-align: middle;
+        height: 150px;
+        width: 50px;
         text-align: center;
     }
 
