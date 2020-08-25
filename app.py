@@ -599,8 +599,6 @@ def delete_video(id):
 
 # -------------------- SEARCH --------------------
 
-# TODO: media queries
-
 @app.route("/search", methods=["GET", "POST"])
 def search():
     """Show search page"""
@@ -650,20 +648,17 @@ def search():
         flash("No remaining searches available today")
         return redirect("/")
 
-    print("---=== JSON - Before ===---")
     if len(user.json) > 0:
         thumbnails = json.loads(user.json)
-        if "items" in thumbnails:
-            for item in thumbnails["items"]:
-                print(item)
-    print("********************")
+    else:
+        thumbnails = json.loads('{"items": []}')
 
     if form_search.validate_on_submit():
         keywords = form_search.keywords.data
         user.keywords = keywords
         keywords = "+".join(keywords.strip().replace("|", "%7C").split())
 
-        # TODO: user.searches = user.searches + 1
+        user.searches = user.searches + 1
         try:
             db.session.add(user)
             db.session.commit()
@@ -673,18 +668,13 @@ def search():
             return redirect("/")
         searches = MAX_SEARCHES - user.searches
 
-        #resp = requests.get(f"https://www.googleapis.com/youtube/v3/search?key={SECRET_API_KEY}&part=snippet&fields=items(id,snippet(title,thumbnails.default.url))&maxResults=50&type=video&videoEmbeddable=true&q={keywords}")
-        #json_dict = resp.json()
+        resp = requests.get(f"https://www.googleapis.com/youtube/v3/search?key={SECRET_API_KEY}&part=snippet&fields=items(id,snippet(title,thumbnails.default.url))&maxResults=50&type=video&videoEmbeddable=true&q={keywords}")
+        json_dict = resp.json()
+
         #json_dict = "{'items': [{'id': {'kind': 'youtube#video', 'videoId': 'cNJtrqb4Pl0'}, 'snippet': {'title': 'Geddy Lee Discusses The Way Rush Ended', 'thumbnails': {'default': {'url': 'https://i.ytimg.com/vi/cNJtrqb4Pl0/default.jpg'}}}}, {'id': {'kind': 'youtube#video', 'videoId': '04Ekje672mo'}, 'snippet': {'title': 'Rush&#39;s Geddy Lee on his Fender USA Geddy Lee Jazz Bass | Fender', 'thumbnails': {'default': {'url': 'https://i.ytimg.com/vi/04Ekje672mo/default.jpg'}}}}, {'id': {'kind': 'youtube#video', 'videoId': 'VL_7pVb2lI0'}, 'snippet': {'title': 'Geddy Lee on Religion', 'thumbnails': {'default': {'url': 'https://i.ytimg.com/vi/VL_7pVb2lI0/default.jpg'}}}}]}"
 
-        print("---=== JSON - After ===---")
-        #json_string = json.dumps(json_dict)
-        #print(json_dict)
-        #print(type(json_dict))
-        #print(json_string)
-        #print(type(json_string))
-        #user.json = json_string
-        print("********************")
+        json_string = json.dumps(json_dict)
+        user.json = json_string
 
         try:
             db.session.add(user)
@@ -694,7 +684,7 @@ def search():
             flash("ERROR 20")
             return redirect("/")
 
-        return render_template("/search.html", FORM_LOG=form_log, USER_ID=session.get("user_id"), VIDEO=None, VIDEOS=videos, MAX_VIDEOS=MAX_VIDEOS, VIDEO_COUNT=video_count, PLAYLISTS=playlists, MAX_PLAYLISTS=MAX_PLAYLISTS, PLAYLIST_COUNT=playlist_count, SEARCHES=searches, THUMBNAILS=thumbnails["items"], FORM_ADD_PLAYLIST_BUTTON=form_add_playlist_button, FORM_ADD_VIDEO_BUTTON=form_add_video_button, FORM_EDIT_PLAYLIST_BUTTON=form_edit_playlist_button, FORM_SEARCH=form_search, FROM_ROUTE="/search")
+        return render_template("/search.html", FORM_LOG=form_log, USER_ID=session.get("user_id"), VIDEO=None, VIDEOS=videos, MAX_VIDEOS=MAX_VIDEOS, VIDEO_COUNT=video_count, PLAYLISTS=playlists, MAX_PLAYLISTS=MAX_PLAYLISTS, PLAYLIST_COUNT=playlist_count, SEARCHES=searches, THUMBNAILS=json_dict["items"], FORM_ADD_PLAYLIST_BUTTON=form_add_playlist_button, FORM_ADD_VIDEO_BUTTON=form_add_video_button, FORM_EDIT_PLAYLIST_BUTTON=form_edit_playlist_button, FORM_SEARCH=form_search, FROM_ROUTE="/search")
     else:
         return render_template("/search.html", FORM_LOG=form_log, USER_ID=session.get("user_id"), VIDEO=None, VIDEOS=videos, MAX_VIDEOS=MAX_VIDEOS, VIDEO_COUNT=video_count, PLAYLISTS=playlists, MAX_PLAYLISTS=MAX_PLAYLISTS, PLAYLIST_COUNT=playlist_count, SEARCHES=searches, THUMBNAILS=thumbnails["items"], FORM_ADD_PLAYLIST_BUTTON=form_add_playlist_button, FORM_ADD_VIDEO_BUTTON=form_add_video_button, FORM_EDIT_PLAYLIST_BUTTON=form_edit_playlist_button, FORM_SEARCH=form_search, FROM_ROUTE="/search")
 
