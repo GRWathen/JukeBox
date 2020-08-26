@@ -136,7 +136,6 @@ def register():
 
         session["username"] = user.username
         session["user_id"] = user.id
-        # on successful login, redirect to secret page
         flash("Logged In")
         return redirect("/")
     else:
