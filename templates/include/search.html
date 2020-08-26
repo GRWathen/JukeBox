@@ -6,8 +6,8 @@
                 if FIELD.widget.input_type != "hidden" -%}
         <div>
             {{ FIELD.label }}
-            {{ FIELD }}
         </div>
+            {{ FIELD }}
             {%- for ERROR in FIELD.errors -%}
         <div>
             {{ ERROR }}
