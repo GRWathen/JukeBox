@@ -321,7 +321,6 @@ img:hover {
         padding-top: 10px;
         padding-bottom: 10px;
         width: 200px;
-        font-size: 150%;
     }
 
     #menu {
@@ -346,9 +345,8 @@ img:hover {
         margin-left: 5px;
         padding-top: 10px;
         padding-bottom: 10px;
-        width: 185px;
+        width: 200px;
         text-align: center;
-        font-size: 150%;
     }
 
     #sectionContent {
@@ -463,7 +461,6 @@ img:hover {
         padding-top: 10px;
         padding-bottom: 10px;
         width: 175px;
-        font-size: 150%;
     }
 
     #menu {
@@ -488,9 +485,8 @@ img:hover {
         margin-left: 5px;
         padding-top: 10px;
         padding-bottom: 10px;
-        width: 160px;
+        width: 175px;
         text-align: center;
-        font-size: 150%;
     }
 
     #sectionContent {
