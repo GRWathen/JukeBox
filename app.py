@@ -18,10 +18,10 @@ MAX_SEARCHES = 5
 app = Flask(__name__)
 # TODO: SECRET_KEY
 #app.config["SECRET_KEY"] = SECRET_KEY
-app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", SECRET_KEY)
+app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY")
 # TODO: SECRET_API_KEY
 #app.config["SECRET_API_KEY"] = SECRET_API_KEY
-app.config["SECRET_API_KEY"] = os.environ.get("SECRET_API_KEY", SECRET_API_KEY)
+app.config["SECRET_API_KEY"] = os.environ.get("SECRET_API_KEY")
 
 app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql:///JukeBoxDB"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
