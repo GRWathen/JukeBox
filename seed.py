@@ -3,9 +3,12 @@
 from flask import Flask
 from flask_debugtoolbar import DebugToolbarExtension
 from models import db, connect_db, User, Video, Playlist, Playlists_Videos
+from secrets import SECRET_KEY
+
+import os
 
 app = Flask(__name__)
-app.config["SECRET_KEY"] = "Don't look at me."
+app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", SECRET_KEY)
 app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql:///JukeBoxDB"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SQLALCHEMY_ECHO"] = True

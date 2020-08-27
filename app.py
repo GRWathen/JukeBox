@@ -8,7 +8,7 @@ from forms import AddPlaylistForm, AddPlaylistButtonForm, AddVideoForm, AddVideo
 from wtforms import BooleanField
 from secrets import SECRET_KEY, SECRET_API_KEY
 
-import datetime, random, requests
+import os, datetime, random, requests
 
 MAX_VIDEOS = 50
 MAX_PLAYLISTS = 5
@@ -16,7 +16,8 @@ VIDEOS_PLAYLIST = 20
 MAX_SEARCHES = 5
 
 app = Flask(__name__)
-app.config["SECRET_KEY"] = SECRET_KEY
+app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", SECRET_KEY)
+app.config["SECRET_API_KEY"] = os.environ.get("SECRET_API_KEY", SECRET_API_KEY)
 app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql:///JukeBoxDB"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SQLALCHEMY_ECHO"] = True
@@ -667,7 +668,7 @@ def search():
             return redirect("/")
         searches = MAX_SEARCHES - user.searches
 
-        resp = requests.get(f"https://www.googleapis.com/youtube/v3/search?key={SECRET_API_KEY}&part=snippet&fields=items(id,snippet(title,thumbnails.default.url))&maxResults=50&type=video&videoEmbeddable=true&q={keywords}")
+        resp = requests.get(f"https://www.googleapis.com/youtube/v3/search?key={app.config['SECRET_API_KEY']}&part=snippet&fields=items(id,snippet(title,thumbnails.default.url))&maxResults=50&type=video&videoEmbeddable=true&q={keywords}")
         json_dict = resp.json()
 
         #json_dict = "{'items': [{'id': {'kind': 'youtube#video', 'videoId': 'cNJtrqb4Pl0'}, 'snippet': {'title': 'Geddy Lee Discusses The Way Rush Ended', 'thumbnails': {'default': {'url': 'https://i.ytimg.com/vi/cNJtrqb4Pl0/default.jpg'}}}}, {'id': {'kind': 'youtube#video', 'videoId': '04Ekje672mo'}, 'snippet': {'title': 'Rush&#39;s Geddy Lee on his Fender USA Geddy Lee Jazz Bass | Fender', 'thumbnails': {'default': {'url': 'https://i.ytimg.com/vi/04Ekje672mo/default.jpg'}}}}, {'id': {'kind': 'youtube#video', 'videoId': 'VL_7pVb2lI0'}, 'snippet': {'title': 'Geddy Lee on Religion', 'thumbnails': {'default': {'url': 'https://i.ytimg.com/vi/VL_7pVb2lI0/default.jpg'}}}}]}"
