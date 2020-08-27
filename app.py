@@ -6,7 +6,7 @@ from sqlalchemy.exc import IntegrityError
 from models import db, connect_db, User, Video, Playlist, Playlists_Videos
 from forms import AddPlaylistForm, AddPlaylistButtonForm, AddVideoForm, AddVideoButtonForm, EditUserForm, EditPlaylistForm, EditPlaylistButtonForm, EditVideoForm, EditVideoButtonForm, LogInOutForm, RegisterForm, SearchForm
 from wtforms import BooleanField
-from secrets import SECRET_KEY, SECRET_API_KEY
+#from secrets import SECRET_KEY, SECRET_API_KEY # TODO: secrets
 
 import os, datetime, random, requests
 
@@ -16,8 +16,13 @@ VIDEOS_PLAYLIST = 20
 MAX_SEARCHES = 5
 
 app = Flask(__name__)
+# TODO: SECRET_KEY
+#app.config["SECRET_KEY"] = SECRET_KEY
 app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY", SECRET_KEY)
+# TODO: SECRET_API_KEY
+#app.config["SECRET_API_KEY"] = SECRET_API_KEY
 app.config["SECRET_API_KEY"] = os.environ.get("SECRET_API_KEY", SECRET_API_KEY)
+
 app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql:///JukeBoxDB"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SQLALCHEMY_ECHO"] = True
