@@ -22,8 +22,10 @@ app.config["SECRET_KEY"] = os.environ.get("SECRET_KEY")
 # TODO: SECRET_API_KEY
 #app.config["SECRET_API_KEY"] = SECRET_API_KEY
 app.config["SECRET_API_KEY"] = os.environ.get("SECRET_API_KEY")
+# TODO: SQLALCHEMY_DATABASE_URI
+#app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql:///JukeBoxDB"
+app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL")
 
-app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql:///JukeBoxDB"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.config["SQLALCHEMY_ECHO"] = True
 #app.config["TESTING"] = True
