@@ -656,7 +656,14 @@ def search():
         return redirect("/")
 
     if len(user.json) > 0:
-        thumbnails = json.loads(user.json)
+        try:
+            thumbnails = json.loads(user.json)
+            if len(thumbnails["items"]) > 0:
+                for thumbnail in thumbnails["items"]:
+                    ident = thumbnail["id"]
+                    snippet = thumbnail["snippet"]
+        except Exception as e:
+            thumbnails = json.loads('{"items": []}')
     else:
         thumbnails = json.loads('{"items": []}')
 
@@ -677,6 +684,14 @@ def search():
 
         resp = requests.get(f"https://www.googleapis.com/youtube/v3/search?key={app.config['SECRET_API_KEY']}&part=snippet&fields=items(id,snippet(title,thumbnails.default.url))&maxResults=50&type=video&videoEmbeddable=true&q={keywords}")
         json_dict = resp.json()
+
+        try:
+            thumbnails = json_dict
+            for thumbnail in thumbnails["items"]:
+                ident = thumbnail["id"]
+                snippet = thumbnail["snippet"]
+        except Exception as e:
+            json_dict = json.loads('{"items": []}')
 
         #json_dict = "{'items': [{'id': {'kind': 'youtube#video', 'videoId': 'cNJtrqb4Pl0'}, 'snippet': {'title': 'Geddy Lee Discusses The Way Rush Ended', 'thumbnails': {'default': {'url': 'https://i.ytimg.com/vi/cNJtrqb4Pl0/default.jpg'}}}}, {'id': {'kind': 'youtube#video', 'videoId': '04Ekje672mo'}, 'snippet': {'title': 'Rush&#39;s Geddy Lee on his Fender USA Geddy Lee Jazz Bass | Fender', 'thumbnails': {'default': {'url': 'https://i.ytimg.com/vi/04Ekje672mo/default.jpg'}}}}, {'id': {'kind': 'youtube#video', 'videoId': 'VL_7pVb2lI0'}, 'snippet': {'title': 'Geddy Lee on Religion', 'thumbnails': {'default': {'url': 'https://i.ytimg.com/vi/VL_7pVb2lI0/default.jpg'}}}}]}"
 
