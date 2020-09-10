@@ -627,3 +627,13 @@ img:hover {
     text-shadow: 0 1px 1px rgba(255, 255, 255, 0.59);
     padding: 5px;
 }
+
+
+
+#sectionContent {
+    overflow: hidden;
+}
+#sectionContent #video {
+    position: relative;
+    top: -52px;
+}
