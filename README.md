@@ -1,7 +1,7 @@
 # World Wide Juke Web
 https://world-wide-juke-web.herokuapp.com
 
-[<img src="https://pixabay.com/get/55e0d6404c55b10ff3d89960c62d3e761037d6ec5b59_640.png" width="200"/>](https://pixabay.com/get/55e0d6404c55b10ff3d89960c62d3e761037d6ec5b59_640.png)
+[<img src="https://world-wide-juke-web.herokuapp.com/static/images/background-jukebox.png" width="200"/>](https://world-wide-juke-web.herokuapp.com/static/images/background-jukebox.png)
 
 **Juke Web** allows _Users_ to save **YouTube** _Video_ links to their personal library for viewing at their convenience, and create _Playlists_ to automatically play through the selected _Videos_.
 
